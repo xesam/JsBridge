@@ -18,7 +18,7 @@ public class ClientProxy {
     }
 
     public void transact(String marshalling) {
-        String script = String.format(Locale.getDefault(), "window.bridge.server_onTransact('%s')", marshalling);
+        String script = String.format(Locale.getDefault(), "window.server_onTransact('%s')", marshalling);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mWebView.evaluateJavascript(script, new ValueCallback<String>() {
                 @Override
