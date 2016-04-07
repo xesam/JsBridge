@@ -9,7 +9,7 @@ import android.webkit.JavascriptInterface;
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 public class ServerProxy {
-    public static final String JAVA_BRIDGE = "XESAM_BRIDGE";
+    public static final String JAVA_BRIDGE = "JAVA_PROXY";
 
     @JavascriptInterface
     public void onTransact(final String marshalling) {

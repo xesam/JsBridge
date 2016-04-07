@@ -17,6 +17,14 @@ public class ClientProxy {
         this.mWebView = webView;
     }
 
+    public void transact(ClientRequest request) {
+
+    }
+
+    public void transact(ClientMarshalling clientMarshalling) {
+        transact(clientMarshalling.getScriptString());
+    }
+
     public void transact(String marshalling) {
         String script = String.format(Locale.getDefault(), "window.server_onTransact('%s')", marshalling);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

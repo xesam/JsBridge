@@ -5,4 +5,6 @@ package dev.xesam.android.web.jsbridge;
  */
 public interface TransactHandler {
     String getName();
+
+    void handle();
 }
