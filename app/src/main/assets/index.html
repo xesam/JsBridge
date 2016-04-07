@@ -4,5 +4,28 @@
 </head>
 <body>
 <h1>JsBridge Test</h1>
+<div>
+    <button id="j-invoke-java-method-1">j-invoke-java-method-1</button>
+</div>
+
+<script>
+    //server
+    function server_onTransact(marshalling){
+        console.log(marshalling);
+    }
+</script>
+
+<script>
+    //client
+    function _$(id){
+        return document.getElementById(id);
+    }
+
+    _$('j-invoke-java-method-1').addEventListener('click', function(e){
+        XESAM_BRIDGE.onTransact('hello from js');
+    }, false);
+
+
+</script>
 </body>
 </html>
