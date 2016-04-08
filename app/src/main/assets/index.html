@@ -33,6 +33,10 @@
             }
             window.invoker(invoke_info, server_method_params);
         },
+        _handlers: {},
+        server_register: function (server_method_name, transact_handler) {
+            this._handlers[server_method_name] = transact_handler;
+        },
         server_onTransact: function (to_be_invoke_unmarshalling, to_be_param_unmarshalling) {
             console.log('server_onTransact:' + to_be_invoke_unmarshalling, +":" + to_be_param_unmarshalling);
 
@@ -51,13 +55,13 @@
 
             var targetFn = null;
 
-            if (server_method_id) {//有 id 表示是回调
+            if (server_method_id && server_method_id > 0) {//有 id 表示是回调
                 var callback = this._callbacks[server_method_id];
                 if (callback) { //找到了回调
                     targetFn = callback[server_method_name];
                 }
             } else if (server_method_name) { //没有 id ，表示是要直接调用某个方法
-                targetFn = window[server_method_name];
+                targetFn = this._handlers[server_method_name] || window[server_method_name];
             }
             if (targetFn) {
                 targetFn(server_method_params);
@@ -94,12 +98,17 @@
         document.body.style.background = 'red';
     }
 
+    window.JsExecutor.server_register('js_fn_1', function () {
+        document.body.style.background = 'green';
+    });
+
     //client
-    function _$(id) {
-        return document.getElementById(id);
+    function _$(id, fn) {
+        var dom = document.getElementById(id);
+        dom.addEventListener('click', fn, false);
     }
 
-    _$('j_showPackageName').addEventListener('click', function (e) {
+    _$('j_showPackageName', function (e) {
         sdk.showPackageName({
             "success": function (data) {
                 console.log('sdk.showPackageName,success', data);
@@ -107,10 +116,10 @@
             "fail": function (error) {
                 console.log('sdk.showPackageName,fail', data);
             }
-        });
-    }, false);
+        })
+    });
 
-    _$('j_getUser_succ').addEventListener('click', function (e) {
+    _$('j_getUser_succ', function (e) {
         sdk.getUser({
             "name_prefix": "standard_succ",
             "success": function (user) {
@@ -119,10 +128,10 @@
             "fail": function (error) {
                 console.log('sdk.getUser,fail;' + data);
             }
-        });
-    }, false);
+        })
+    });
 
-    _$('j_getUser_error').addEventListener('click', function (e) {
+    _$('j_getUser_error', function (e) {
         sdk.getUser({
             "name_prefix": "standard_error",
             "success": function (user) {
@@ -131,8 +140,8 @@
             "fail": function (error) {
                 console.log('sdk.getUser,fail;' + error.error);
             }
-        });
-    }, false);
+        })
+    });
 
 </script>
 </body>

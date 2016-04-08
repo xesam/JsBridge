@@ -9,16 +9,9 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import java.util.Map;
-
 import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.MarshallableException;
-import dev.xesam.android.web.jsbridge.MarshallableString;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
-import dev.xesam.android.web.jsbridge.client.ClientProxy;
-import dev.xesam.android.web.jsbridge.client.ClientRequest;
+import dev.xesam.android.web.jsbridge.client.InvokeInfo;
 import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,46 +40,22 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
-        jsBridge.register(new SimpleTransactHandler("getUser") {
-            @Override
-            public void handle(final ServerRequest serverRequest) {
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        User user = getUser();
-                        String serverParams = serverRequest.getServerParams();
-                        Map<String, String> map = new Gson().fromJson(serverParams, Map.class);
-                        String prefix = map.get("name_prefix");
-                        Toast.makeText(getApplicationContext(), "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
-                        final String userMarshalling = new Gson().toJson(user);
-                        if ("standard_error".equals(prefix)) {
-                            serverRequest.triggerCallback("fail", new MarshallableException("{\"error\" : \"这里是错误消息\"}"));
-                        } else {
-                            serverRequest.triggerCallback("success", new MarshallableString(userMarshalling));
-                        }
-                    }
-                });
-            }
-        });
+        jsBridge.register(new UserHandler(this));
         vWebView.loadUrl("file:///android_asset/index.html");
 
         vBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ClientRequest request = new ClientRequest(null, null);
-                new ClientProxy(jsBridge).transact(request);
+                InvokeInfo invokeInfo = InvokeInfo.createServerCallback("js_fn_1");
+                jsBridge.transact(invokeInfo);
             }
         });
 
         vBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ClientProxy(jsBridge).transact("window.js_fn_1()");
+                jsBridge.transact("window.js_fn_1()");
             }
         });
-    }
-
-    private User getUser() {
-        return new User();
     }
 }

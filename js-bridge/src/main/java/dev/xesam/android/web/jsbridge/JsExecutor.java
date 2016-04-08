@@ -20,7 +20,13 @@ public class JsExecutor {
     }
 
     public void onTransact(InvokeInfo invokeInfo, Marshallable param) {
-        String script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfo.toMarshalling(), param.toMarshalling());
+        String script;
+        if (param == null) {
+            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s')", invokeInfo.toMarshalling());
+        } else {
+            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfo.toMarshalling(), param.toMarshalling());
+        }
+
         onTransact(script);
     }
 

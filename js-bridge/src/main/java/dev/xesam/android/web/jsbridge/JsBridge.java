@@ -5,6 +5,7 @@ import android.webkit.WebView;
 
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
 import dev.xesam.android.web.jsbridge.client.ClientRequest;
+import dev.xesam.android.web.jsbridge.client.InvokeInfo;
 import dev.xesam.android.web.jsbridge.server.ServerProxy;
 
 /**
@@ -39,7 +40,15 @@ public final class JsBridge {
         mServerProxy.register(transactHandler);
     }
 
-    public void transact(ClientRequest clientRequest) {
-        mClientProxy.transact(clientRequest);
+    public void transact(String script) {
+        mClientProxy.transact(script);
+    }
+
+    public void transact(InvokeInfo invokeInfo) {
+        mClientProxy.transact(invokeInfo);
+    }
+
+    public void transact(ClientRequest request) {
+        mClientProxy.transact(request);
     }
 }
