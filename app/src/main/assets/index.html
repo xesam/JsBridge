@@ -19,7 +19,7 @@
 
 <script>
 
-    window.Proxy = {
+    window.JsExecutor = {
         _callbacks: {},
         client_transact: function (server_method_name, server_method_params, client_callback) {
             console.log(server_method_name, server_method_params, client_callback);
@@ -65,7 +65,7 @@
         };
     } else {
         window.invoker = function (invoke_info, server_method_params) {
-            JAVA_PROXY.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
+            JavaExecutor.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };
     }
 
@@ -73,13 +73,13 @@
         showPackageName: function (params) {
             var _server_method_name = 'showPackageName';
             var _server_method_params = params;
-            window.Proxy.client_transact(_server_method_name, _server_method_params, null);
+            window.JsExecutor.client_transact(_server_method_name, _server_method_params, null);
         },
         getUser: function (params) {
             var _server_method_name = 'getUser';
             var _server_method_params = params;
             var _client_callback = params;
-            window.Proxy.client_transact(_server_method_name, _server_method_params, _client_callback);
+            window.JsExecutor.client_transact(_server_method_name, _server_method_params, _client_callback);
         }
     };
 

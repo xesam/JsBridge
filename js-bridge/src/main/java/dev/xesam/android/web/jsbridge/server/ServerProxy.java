@@ -13,7 +13,7 @@ import dev.xesam.android.web.jsbridge.client.ClientRequest;
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 public class ServerProxy {
-    public static final String JAVA_BRIDGE = "JAVA_PROXY";
+    public static final String JAVA_BRIDGE = "JavaExecutor";
 
     private JsBridge mJsBridge;
     private Map<String, TransactHandler> handlers = new HashMap<>();

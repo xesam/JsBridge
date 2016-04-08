@@ -19,13 +19,6 @@ public class InvokeInfo {
     private String mServerMethodName;
     private long mClientCallbackId = INVALID_CALLBACK;
 
-    @Deprecated
-    public static InvokeInfo createServerCallback(long callbackId) {
-        InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mServerMethodId = callbackId;
-        return invokeInfo;
-    }
-
     public static InvokeInfo createServerCallback(String callbackMthodName) {
         InvokeInfo invokeInfo = new InvokeInfo();
         invokeInfo.mServerMethodName = callbackMthodName;
