@@ -16,15 +16,11 @@ public class ClientProxy {
         this.mJsExecutor = new JsExecutor(mJsBridge);
     }
 
-    public void transact(ClientRequest request) {
-        transact(request.getInvokeInfoMarshalling(), request.getParamMarshalling());
-    }
-
-    private void transact(String invokeInfoMarshalling, String paramMarshalling) {
-        mJsExecutor.onTransact(invokeInfoMarshalling, paramMarshalling);
-    }
-
     public void transact(String script) {
         mJsExecutor.onTransact(script);
+    }
+
+    public void transact(ClientRequest request) {
+        mJsExecutor.onTransact(request.getInvokeInfo(), request.getParam());
     }
 }

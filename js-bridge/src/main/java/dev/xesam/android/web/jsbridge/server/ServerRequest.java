@@ -52,7 +52,7 @@ public class ServerRequest {
 
     public void triggerCallback(String callbackMethodName, Marshallable marshallable) {
         InvokeInfo invokeInfo = InvokeInfo.createServerCallback(clientCallbackId, callbackMethodName);
-        ClientRequest request = new ClientRequest(invokeInfo, marshallable.toMarshalling());
+        ClientRequest request = new ClientRequest(invokeInfo, marshallable);
         mServerProxy.dispatchCallback(this, request);
     }
 }

@@ -6,6 +6,8 @@ import android.webkit.ValueCallback;
 
 import java.util.Locale;
 
+import dev.xesam.android.web.jsbridge.client.InvokeInfo;
+
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
  */
@@ -16,9 +18,14 @@ public class JsExecutor {
     public JsExecutor(JsBridge mJsBridge) {
         this.mJsBridge = mJsBridge;
     }
+//
+//    public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
+//        String script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfoMarshalling, paramMarshalling);
+//        onTransact(script);
+//    }
 
-    public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
-        String script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfoMarshalling, paramMarshalling);
+    public void onTransact(InvokeInfo invokeInfo, Marshallable param) {
+        String script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfo.toMarshalling(), param.toMarshalling());
         onTransact(script);
     }
 

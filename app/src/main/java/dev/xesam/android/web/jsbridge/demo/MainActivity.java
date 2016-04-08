@@ -14,7 +14,8 @@ import com.google.gson.Gson;
 import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.Marshallable;
+import dev.xesam.android.web.jsbridge.MarshallableException;
+import dev.xesam.android.web.jsbridge.MarshallableString;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
 import dev.xesam.android.web.jsbridge.client.ClientRequest;
@@ -59,19 +60,9 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
                         final String userMarshalling = new Gson().toJson(user);
                         if ("standard_error".equals(prefix)) {
-                            serverRequest.triggerCallback("fail", new Marshallable() {
-                                @Override
-                                public String toMarshalling() {
-                                    return "{\"error\" : \"这里是错误消息\"}";
-                                }
-                            });
+                            serverRequest.triggerCallback("fail", new MarshallableException("{\"error\" : \"这里是错误消息\"}"));
                         } else {
-                            serverRequest.triggerCallback("success", new Marshallable() {
-                                @Override
-                                public String toMarshalling() {
-                                    return userMarshalling;
-                                }
-                            });
+                            serverRequest.triggerCallback("success", new MarshallableString(userMarshalling));
                         }
                     }
                 });

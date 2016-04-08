@@ -3,10 +3,12 @@ package dev.xesam.android.web.jsbridge.client;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dev.xesam.android.web.jsbridge.Marshallable;
+
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-public class InvokeInfo {
+public class InvokeInfo implements Marshallable {
     public static final long INVALID_CALLBACK = 0;
 
     public static final String _SERVER_METHOD_ID = "_server_method_id";
@@ -52,6 +54,7 @@ public class InvokeInfo {
         }
     }
 
+    @Override
     public String toMarshalling() {
         JSONObject jsonObject = new JSONObject();
         try {
