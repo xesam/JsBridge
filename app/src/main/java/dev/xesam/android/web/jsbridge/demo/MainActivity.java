@@ -10,6 +10,11 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
+import com.google.gson.internal.Streams;
+
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
@@ -44,14 +49,17 @@ public class MainActivity extends AppCompatActivity {
         });
         jsBridge.register(new SimpleTransactHandler("getUser") {
             @Override
-            public void handle(ServerRequest serverRequest) {
+            public void handle(final ServerRequest serverRequest) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         User user = getUser();
-                        Toast.makeText(getApplicationContext(), "user.getName():" + user.getName(), Toast.LENGTH_SHORT).show();
-                        String userString = new Gson().toJson(user);
-
+                        String serverParams = serverRequest.getServerParams();
+                        Map<String, String> map = new Gson().fromJson(serverParams, Map.class);
+                        String prefix = map.get("name_prefix");
+                        Toast.makeText(getApplicationContext(), "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
+                        String userMashalling = new Gson().toJson(user);
+                        serverRequest.postCallback(userMashalling);
                     }
                 });
             }

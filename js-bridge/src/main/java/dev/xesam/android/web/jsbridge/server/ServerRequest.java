@@ -15,13 +15,15 @@ public class ServerRequest {
     public static final String _CLIENT_CALLBACK_ID = "_client_callback";
 
     private String serverMethodName;
+    private String serverMethodParams;
     private long clientCallbackId = INVALID_CALLBACK;
 
-    public ServerRequest(String marshallingInvokeInfo, String marshallingParam) {
-        unmashalling(marshallingInvokeInfo);
+    public ServerRequest(String invokeInfoMarshalling, String paramMarshalling) {
+        unmarshalling(invokeInfoMarshalling);
+        serverMethodParams = paramMarshalling;
     }
 
-    private void unmashalling(String marshalling) {
+    private void unmarshalling(String marshalling) {
         try {
             JSONObject jsonObject = new JSONObject(marshalling);
             serverMethodName = jsonObject.getString(_SERVER_METHOD_NAME);
@@ -41,7 +43,11 @@ public class ServerRequest {
         return clientCallbackId;
     }
 
-    public void getParams() {
+    public String getServerParams() {
+        return serverMethodParams;
+    }
+
+    public void postCallback(String paramMashalling) {
 
     }
 }

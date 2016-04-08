@@ -20,8 +20,8 @@ public class ServerProxy {
     }
 
     @JavascriptInterface
-    public void onTransact(String marshallingInvokeInfo, String marshallingParams) {
-        ServerRequest serverRequest = new ServerRequest(marshallingInvokeInfo, marshallingParams);
+    public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
+        ServerRequest serverRequest = new ServerRequest(invokeInfoMarshalling, paramMarshalling);
         TransactHandler transactHandler = handlers.get(serverRequest.getServerMethodName());
         if (transactHandler != null) {
             transactHandler.handle(serverRequest);

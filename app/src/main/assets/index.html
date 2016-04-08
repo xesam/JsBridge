@@ -25,12 +25,7 @@
                     invoke_info['_client_callback'] = callback_id;
                 }
 
-                var params = {
-                    "_server_method_name": server_method_name,
-                    "_server_method_params": server_method_params
-                };
-
-                console.log(JSON.stringify(invoke_info), JSON.stringify(params));
+                console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
             },
             client_transact: function (server_method_name, server_method_params, client_callback) {
                 console.log(server_method_name, server_method_params, client_callback);
@@ -67,13 +62,8 @@
                     invoke_info['_client_callback'] = callback_id;
                 }
 
-                var params = {
-                    "_server_method_name": server_method_name,
-                    "_server_method_params": server_method_params
-                };
-
-                console.log(JSON.stringify(invoke_info), JSON.stringify(params));
-                JAVA_PROXY.onTransact(JSON.stringify(invoke_info), JSON.stringify(params));
+                console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
+                JAVA_PROXY.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
             },
             server_onTransact: function (to_be_marshalling) {
                 console.log(to_be_marshalling);
