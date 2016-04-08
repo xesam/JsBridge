@@ -3,19 +3,20 @@ package dev.xesam.android.web.jsbridge.client;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.ValueCallback;
-import android.webkit.WebView;
 
 import java.util.Locale;
+
+import dev.xesam.android.web.jsbridge.JsBridge;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 public class ClientProxy {
 
-    public WebView mWebView;
+    private JsBridge mJsBridge;
 
-    public ClientProxy(WebView webView) {
-        this.mWebView = webView;
+    public ClientProxy(JsBridge mJsBridge) {
+        this.mJsBridge = mJsBridge;
     }
 
     public void transact(ClientRequest request) {
@@ -29,14 +30,14 @@ public class ClientProxy {
 
     public void transact(String script) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mWebView.evaluateJavascript(script, new ValueCallback<String>() {
+            mJsBridge.getWebView().evaluateJavascript(script, new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
                     Log.e("evaluateJavascript", "evaluateJavascript successful");
                 }
             });
         } else {
-            mWebView.loadUrl("javascript:" + script);
+            mJsBridge.getWebView().loadUrl("javascript:" + script);
         }
     }
 }

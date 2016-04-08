@@ -3,6 +3,7 @@ package dev.xesam.android.web.jsbridge;
 import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
+import dev.xesam.android.web.jsbridge.client.ClientProxy;
 import dev.xesam.android.web.jsbridge.server.ServerProxy;
 
 /**
@@ -13,11 +14,18 @@ public final class JsBridge {
     private WebView mWebView;
 
     private ServerProxy mServerProxy;
+    private ClientProxy mClientProxy;
 
     public JsBridge(WebView webView) {
         this.mWebView = webView;
-        this.mServerProxy = new ServerProxy();
+        this.mServerProxy = new ServerProxy(this);
+        this.mClientProxy = new ClientProxy(this);
+
         inject(mWebView);
+    }
+
+    public WebView getWebView() {
+        return mWebView;
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface"})

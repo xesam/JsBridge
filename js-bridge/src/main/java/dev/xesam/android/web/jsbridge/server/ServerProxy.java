@@ -5,6 +5,7 @@ import android.webkit.JavascriptInterface;
 import java.util.HashMap;
 import java.util.Map;
 
+import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.TransactHandler;
 
 /**
@@ -13,10 +14,11 @@ import dev.xesam.android.web.jsbridge.TransactHandler;
 public class ServerProxy {
     public static final String JAVA_BRIDGE = "JAVA_PROXY";
 
+    private JsBridge mJsBridge;
     private Map<String, TransactHandler> handlers = new HashMap<>();
 
-    public ServerProxy() {
-
+    public ServerProxy(JsBridge mJsBridge) {
+        this.mJsBridge = mJsBridge;
     }
 
     @JavascriptInterface

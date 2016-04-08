@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         vWebView = (WebView) findViewById(R.id.webview);
         vBtn1 = (Button) findViewById(R.id.invoke_js_without_callback);
         vBtn2 = (Button) findViewById(R.id.invoke_js_with_callback);
-        JsBridge jsBridge = new JsBridge(vWebView);
+        final JsBridge jsBridge = new JsBridge(vWebView);
         jsBridge.register(new SimpleTransactHandler("showPackageName") {
             @Override
             public void handle(ServerRequest serverRequest) {
@@ -68,14 +68,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ClientRequest request = new ClientRequest(null, null);
-                new ClientProxy(vWebView).transact(request);
+                new ClientProxy(jsBridge).transact(request);
             }
         });
 
         vBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ClientProxy(vWebView).transact("window.js_fn_1()");
+                new ClientProxy(jsBridge).transact("window.js_fn_1()");
             }
         });
     }
