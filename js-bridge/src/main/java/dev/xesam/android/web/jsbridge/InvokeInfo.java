@@ -1,5 +1,7 @@
 package dev.xesam.android.web.jsbridge;
 
+import android.text.TextUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -13,22 +15,41 @@ public class InvokeInfo implements Marshallable {
     public static final String _SERVER_METHOD_NAME = "_server_method_name";
     public static final String _CLIENT_CALLBACK_ID = "_client_callback";
 
-    public static final String _SERVER_METHOD_PARAMS = "_server_method_params";
-
     private long mServerMethodId = INVALID_CALLBACK;
     private String mServerMethodName;
     private long mClientCallbackId = INVALID_CALLBACK;
 
-    public static InvokeInfo createServerCallback(String callbackMthodName) {
+    /**
+     * 直接调用 js
+     */
+    public static InvokeInfo createServerInvoke(String serverMethodName) {
         InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mServerMethodName = callbackMthodName;
+        invokeInfo.mServerMethodName = serverMethodName;
         return invokeInfo;
     }
 
-    public static InvokeInfo createServerCallback(long serverMethodId, String callbackMthodName) {
+    /**
+     * 去回调 js
+     */
+    public static InvokeInfo createServerCallback(String callbackMethodName) {
         InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mServerMethodId = serverMethodId;
-        invokeInfo.mServerMethodName = callbackMthodName;
+        invokeInfo.mServerMethodName = callbackMethodName;
+        return invokeInfo;
+    }
+
+    /**
+     * 回调 js
+     */
+    public static InvokeInfo createServerCallback(InvokeInfo serverInvokeInfo, String callbackMethodName) {
+        InvokeInfo invokeInfo = new InvokeInfo();
+        invokeInfo.mServerMethodId = serverInvokeInfo.mClientCallbackId;
+        invokeInfo.mServerMethodName = callbackMethodName;
+        return invokeInfo;
+    }
+
+    public static InvokeInfo createFromMarshalling(String marshalling) {
+        InvokeInfo invokeInfo = new InvokeInfo();
+        invokeInfo.unmarshalling(marshalling);
         return invokeInfo;
     }
 
@@ -63,5 +84,25 @@ public class InvokeInfo implements Marshallable {
             e.printStackTrace();
         }
         return jsonObject.toString();
+    }
+
+    public boolean isCallback() {
+        return mServerMethodId > 0;
+    }
+
+    public boolean isDirectInvoke() {
+        return !TextUtils.isEmpty(mServerMethodName);
+    }
+
+    public long getServerMethodId() {
+        return mServerMethodId;
+    }
+
+    public String getServerMethodName() {
+        return mServerMethodName;
+    }
+
+    public long getClientCallbackId() {
+        return mClientCallbackId;
     }
 }

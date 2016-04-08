@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         vBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InvokeInfo invokeInfo = InvokeInfo.createServerCallback("js_fn_1");
+                InvokeInfo invokeInfo = InvokeInfo.createServerInvoke("js_fn_1");
                 jsBridge.transact(invokeInfo);
             }
         });
