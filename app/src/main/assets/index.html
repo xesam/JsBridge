@@ -6,8 +6,13 @@
 <h1>JsBridge Test</h1>
 
 <div>
-    <button id="j-invoke-java-method-1">j-invoke-java-method-1</button>
-    <button id="j-invoke-java-method-2">j-invoke-java-method-2</button>
+    <p>
+        <button id="j_showPackageName">showPackageName</button>
+    </p>
+    <p>
+
+        <button id="j_getUser">getUser</button>
+    </p>
 </div>
 
 <script>
@@ -27,12 +32,31 @@
             window.invoker(invoke_info, server_method_params);
         },
         server_onTransact: function (to_be_invoke_unmarshalling, to_be_param_unmarshalling) {
-            console.log(to_be_invoke_unmarshalling, to_be_param_unmarshalling);
-            console.log(JSON.parse(to_be_invoke_unmarshalling), JSON.parse(to_be_param_unmarshalling));
+            console.log('server_onTransact:' + to_be_invoke_unmarshalling, +":" + to_be_param_unmarshalling);
+            var invoke_info = JSON.parse(to_be_invoke_unmarshalling);
+            var server_method_params = JSON.parse(to_be_param_unmarshalling);
+            console.log('server_onTransact', invoke_info, server_method_params);
+
+            var server_method_id = invoke_info['_server_method_id'];
+            var server_method_name = invoke_info['_server_method_name'];
+            server_method_name = 'success';
+
+            if (server_method_id) {//有 id 表示是回调
+                var callback = this._callbacks[server_method_id];
+                if (callback) { //找到了回调
+                    var fn = callback[server_method_name];
+                    if (fn) {
+                        fn(server_method_params);
+                    }
+                }
+            } else { //没有 id ，表示是要直接调用某个方法
+                var fn = window[server_method_name];
+                if (fn) {
+                    fn(server_method_params);
+                }
+            }
         }
     };
-
-    console.log(location.href);
 
     if (location.href.indexOf("workspace") != -1) {
         window.invoker = function (invoke_info, server_method_params) {
@@ -68,25 +92,25 @@
         return document.getElementById(id);
     }
 
-    _$('j-invoke-java-method-1').addEventListener('click', function (e) {
+    _$('j_showPackageName').addEventListener('click', function (e) {
         sdk.showPackageName({
             "success": function (data) {
-                console.log('sdk.getPackageName,success', data);
+                console.log('sdk.showPackageName,success', data);
             },
             "fail": function (error) {
-                console.log('sdk.getPackageName,fail', data);
+                console.log('sdk.showPackageName,fail', data);
             }
         });
     }, false);
 
-    _$('j-invoke-java-method-2').addEventListener('click', function (e) {
+    _$('j_getUser').addEventListener('click', function (e) {
         sdk.getUser({
             "name_prefix": "standard_prefix",
             "success": function (user) {
-                console.log('sdk.getUser,success', user);
+                console.log('sdk.getUser,success:' + user.name);
             },
             "fail": function (error) {
-                console.log('sdk.getUser,fail', data);
+                console.log('sdk.getUser,fail;' + data);
             }
         });
     }, false);

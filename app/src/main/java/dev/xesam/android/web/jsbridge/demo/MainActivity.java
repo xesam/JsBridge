@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                         String prefix = map.get("name_prefix");
                         Toast.makeText(getApplicationContext(), "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
                         String userMashalling = new Gson().toJson(user);
-                        serverRequest.postCallback(userMashalling);
+                        serverRequest.triggerCallback(userMashalling);
                     }
                 });
             }

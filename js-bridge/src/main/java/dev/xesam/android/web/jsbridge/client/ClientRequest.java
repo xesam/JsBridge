@@ -1,28 +1,27 @@
 package dev.xesam.android.web.jsbridge.client;
 
-import dev.xesam.android.web.jsbridge.server.ServerRequest;
-
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 public class ClientRequest {
 
-    public ClientRequest(InvokeInfo invokeInfo) {
+    private InvokeInfo mInvokeInfo;
+    private String mParamMarshalling;
 
+    public ClientRequest(InvokeInfo invokeInfo) {
+        this(invokeInfo, null);
     }
 
     public ClientRequest(InvokeInfo invokeInfo, String paramMarshalling) {
-
-    }
-
-    public ClientRequest(ServerRequest serverRequest) {
+        mInvokeInfo = invokeInfo;
+        mParamMarshalling = paramMarshalling;
     }
 
     public String getInvokeInfoMarshalling() {
-        return "{}";
+        return mInvokeInfo.toMarshalling();
     }
 
     public String getParamMarshalling() {
-        return "{}";
+        return mParamMarshalling;
     }
 }

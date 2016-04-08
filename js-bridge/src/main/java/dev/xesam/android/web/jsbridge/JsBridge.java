@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
+import dev.xesam.android.web.jsbridge.client.ClientRequest;
 import dev.xesam.android.web.jsbridge.server.ServerProxy;
 
 /**
@@ -36,5 +37,9 @@ public final class JsBridge {
 
     public void register(TransactHandler transactHandler) {
         mServerProxy.register(transactHandler);
+    }
+
+    public void transact(ClientRequest clientRequest) {
+        mClientProxy.transact(clientRequest);
     }
 }

@@ -7,6 +7,8 @@ import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.TransactHandler;
+import dev.xesam.android.web.jsbridge.client.ClientRequest;
+import dev.xesam.android.web.jsbridge.client.InvokeInfo;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
@@ -23,7 +25,7 @@ public class ServerProxy {
 
     @JavascriptInterface
     public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
-        ServerRequest serverRequest = new ServerRequest(invokeInfoMarshalling, paramMarshalling);
+        ServerRequest serverRequest = new ServerRequest(this, invokeInfoMarshalling, paramMarshalling);
         TransactHandler transactHandler = handlers.get(serverRequest.getServerMethodName());
         if (transactHandler != null) {
             transactHandler.handle(serverRequest);
@@ -32,5 +34,11 @@ public class ServerProxy {
 
     public void register(TransactHandler transactHandler) {
         handlers.put(transactHandler.getServerMethodName(), transactHandler);
+    }
+
+    void dispatchCallback(ServerRequest serverRequest, String paramMarshalling) {
+        InvokeInfo invokeInfo = serverRequest.getClientInvokeInfo();
+        ClientRequest request = new ClientRequest(invokeInfo, paramMarshalling);
+        mJsBridge.transact(request);
     }
 }

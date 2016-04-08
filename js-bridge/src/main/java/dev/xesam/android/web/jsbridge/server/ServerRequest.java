@@ -3,6 +3,8 @@ package dev.xesam.android.web.jsbridge.server;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dev.xesam.android.web.jsbridge.client.InvokeInfo;
+
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
@@ -14,11 +16,14 @@ public class ServerRequest {
     public static final String _SERVER_METHOD_PARAMS = "_server_method_params";
     public static final String _CLIENT_CALLBACK_ID = "_client_callback";
 
+    private ServerProxy mServerProxy;
+
     private String serverMethodName;
     private String serverMethodParams;
     private long clientCallbackId = INVALID_CALLBACK;
 
-    public ServerRequest(String invokeInfoMarshalling, String paramMarshalling) {
+    public ServerRequest(ServerProxy serverProxy, String invokeInfoMarshalling, String paramMarshalling) {
+        this.mServerProxy = serverProxy;
         unmarshalling(invokeInfoMarshalling);
         serverMethodParams = paramMarshalling;
     }
@@ -39,15 +44,15 @@ public class ServerRequest {
         return serverMethodName;
     }
 
-    public long getClientCallbackId() {
-        return clientCallbackId;
-    }
-
     public String getServerParams() {
         return serverMethodParams;
     }
 
-    public void postCallback(String paramMashalling) {
+    public InvokeInfo getClientInvokeInfo() {
+        return InvokeInfo.createServerCallback(clientCallbackId);
+    }
 
+    public void triggerCallback(String paramMarshalling) {
+        mServerProxy.dispatchCallback(this, paramMarshalling);
     }
 }

@@ -13,17 +13,21 @@ public class User implements Parcelable {
     private String name;
     private URL blog;
 
-    public String getName() {
-        return "xesam";
-    }
-
-    public URL getBlog() {
+    public User() {
+        this.name = "xesam";
         try {
-            return new URL("https://github.com/xesam");
+            this.blog = new URL("https://github.com/xesam");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-        return null;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public URL getBlog() {
+        return blog;
     }
 
     @Override
@@ -35,9 +39,6 @@ public class User implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
         dest.writeSerializable(this.blog);
-    }
-
-    public User() {
     }
 
     protected User(Parcel in) {
