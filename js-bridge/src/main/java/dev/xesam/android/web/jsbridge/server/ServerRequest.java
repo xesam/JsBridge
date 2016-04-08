@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 import dev.xesam.android.web.jsbridge.Marshallable;
 import dev.xesam.android.web.jsbridge.client.ClientRequest;
-import dev.xesam.android.web.jsbridge.client.InvokeInfo;
+import dev.xesam.android.web.jsbridge.InvokeInfo;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.

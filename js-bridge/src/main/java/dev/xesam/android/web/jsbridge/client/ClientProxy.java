@@ -1,5 +1,6 @@
 package dev.xesam.android.web.jsbridge.client;
 
+import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.JsExecutor;
 

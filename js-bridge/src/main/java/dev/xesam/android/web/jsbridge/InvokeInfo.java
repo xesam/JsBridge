@@ -1,9 +1,7 @@
-package dev.xesam.android.web.jsbridge.client;
+package dev.xesam.android.web.jsbridge;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import dev.xesam.android.web.jsbridge.Marshallable;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-8.

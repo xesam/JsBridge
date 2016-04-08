@@ -6,8 +6,6 @@ import android.webkit.ValueCallback;
 
 import java.util.Locale;
 
-import dev.xesam.android.web.jsbridge.client.InvokeInfo;
-
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
  */

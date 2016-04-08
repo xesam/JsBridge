@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
-import dev.xesam.android.web.jsbridge.client.InvokeInfo;
+import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
 public class MainActivity extends AppCompatActivity {
