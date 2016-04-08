@@ -1,5 +1,7 @@
 package dev.xesam.android.web.jsbridge;
 
+import dev.xesam.android.web.jsbridge.server.ServerRequest;
+
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
@@ -11,12 +13,13 @@ public class SimpleTransactHandler implements TransactHandler {
     }
 
     @Override
-    public String getName() {
+    public String getServerMethodName() {
         return name;
     }
 
     @Override
-    public void handle() {
+    public void handle(ServerRequest serverRequest) {
 
     }
+
 }

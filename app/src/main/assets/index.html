@@ -16,6 +16,24 @@
             _callbacks: {},
             client_transact: function (server_method_name, server_method_params, client_callback) {
                 console.log(server_method_name, server_method_params, client_callback);
+                var invoke_info = {
+                    "_server_method_name": server_method_name
+                };
+                if (client_callback) {
+                    var callback_id = new Date().getTime();
+                    this._callbacks[callback_id] = client_callback;
+                    invoke_info['_client_callback'] = callback_id;
+                }
+
+                var params = {
+                    "_server_method_name": server_method_name,
+                    "_server_method_params": server_method_params
+                };
+
+                console.log(JSON.stringify(invoke_info), JSON.stringify(params));
+            },
+            client_transact: function (server_method_name, server_method_params, client_callback) {
+                console.log(server_method_name, server_method_params, client_callback);
                 var wrap = {
                     "_server_method_name": server_method_name,
                     "_server_method_params": server_method_params
@@ -40,19 +58,22 @@
             _callbacks: {},
             client_transact: function (server_method_name, server_method_params, client_callback) {
                 console.log(server_method_name, server_method_params, client_callback);
-                var wrap = {
-                    "_server_method_name": server_method_name,
-                    "_server_method_params": server_method_params
+                var invoke_info = {
+                    "_server_method_name": server_method_name
                 };
                 if (client_callback) {
                     var callback_id = new Date().getTime();
                     this._callbacks[callback_id] = client_callback;
-                    wrap['_client_callback'] = callback_id;
+                    invoke_info['_client_callback'] = callback_id;
                 }
 
-                var marshalling = JSON.stringify(wrap);
-                console.log(marshalling);
-                JAVA_PROXY.onTransact(marshalling);
+                var params = {
+                    "_server_method_name": server_method_name,
+                    "_server_method_params": server_method_params
+                };
+
+                console.log(JSON.stringify(invoke_info), JSON.stringify(params));
+                JAVA_PROXY.onTransact(JSON.stringify(invoke_info), JSON.stringify(params));
             },
             server_onTransact: function (to_be_marshalling) {
                 console.log(to_be_marshalling);
@@ -63,13 +84,18 @@
     }
 
     var sdk = {
-        getPackageName: function (params) {
-            var _server_method_name = 'getPackageName';
+        showPackageName: function (params) {
+            var _server_method_name = 'showPackageName';
+            var _server_method_params = params;
+            window.Proxy.client_transact(_server_method_name, _server_method_params, null);
+        },
+        getUser: function (params) {
+            var _server_method_name = 'getUser';
             var _server_method_params = params;
             var _client_callback = params;
             window.Proxy.client_transact(_server_method_name, _server_method_params, _client_callback);
         }
-    }
+    };
 
     //server
     function server_onTransact(marshalling) {
@@ -82,7 +108,7 @@
     }
 
     _$('j-invoke-java-method-1').addEventListener('click', function (e) {
-        sdk.getPackageName({
+        sdk.showPackageName({
             "success": function (data) {
                 console.log('sdk.getPackageName,success', data);
             },
@@ -93,6 +119,15 @@
     }, false);
 
     _$('j-invoke-java-method-2').addEventListener('click', function (e) {
+        sdk.getUser({
+            "name_prefix": "standard_prefix",
+            "success": function (user) {
+                console.log('sdk.getUser,success', user);
+            },
+            "fail": function (error) {
+                console.log('sdk.getUser,fail', data);
+            }
+        });
     }, false);
 
 

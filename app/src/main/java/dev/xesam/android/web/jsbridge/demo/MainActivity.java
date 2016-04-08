@@ -9,9 +9,12 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
+import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,13 +30,28 @@ public class MainActivity extends AppCompatActivity {
         vBtn1 = (Button) findViewById(R.id.invoke_js_without_callback);
         vBtn2 = (Button) findViewById(R.id.invoke_js_with_callback);
         JsBridge jsBridge = new JsBridge(vWebView);
-        jsBridge.register(new SimpleTransactHandler("getPackageName") {
+        jsBridge.register(new SimpleTransactHandler("showPackageName") {
             @Override
-            public void handle() {
+            public void handle(ServerRequest serverRequest) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "getPackageName", Toast.LENGTH_SHORT).show();
+                        String packageName = getPackageName();
+                        Toast.makeText(getApplicationContext(), "showPackageName:" + packageName, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        jsBridge.register(new SimpleTransactHandler("getUser") {
+            @Override
+            public void handle(ServerRequest serverRequest) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        User user = getUser();
+                        Toast.makeText(getApplicationContext(), "user.getName():" + user.getName(), Toast.LENGTH_SHORT).show();
+                        String userString = new Gson().toJson(user);
+
                     }
                 });
             }
@@ -55,4 +73,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private User getUser() {
+        return new User();
+    }
 }

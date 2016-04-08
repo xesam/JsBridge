@@ -20,15 +20,15 @@ public class ServerProxy {
     }
 
     @JavascriptInterface
-    public void onTransact(final String marshalling) {
-        ServerUnmarshalling serverUnmarshalling = new ServerUnmarshalling(marshalling);
-        TransactHandler transactHandler = handlers.get(serverUnmarshalling.getServerMethodName());
+    public void onTransact(String marshallingInvokeInfo, String marshallingParams) {
+        ServerRequest serverRequest = new ServerRequest(marshallingInvokeInfo, marshallingParams);
+        TransactHandler transactHandler = handlers.get(serverRequest.getServerMethodName());
         if (transactHandler != null) {
-            transactHandler.handle();
+            transactHandler.handle(serverRequest);
         }
     }
 
     public void register(TransactHandler transactHandler) {
-        handlers.put(transactHandler.getName(), transactHandler);
+        handlers.put(transactHandler.getServerMethodName(), transactHandler);
     }
 }
