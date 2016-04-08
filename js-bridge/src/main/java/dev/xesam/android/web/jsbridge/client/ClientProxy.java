@@ -20,6 +20,10 @@ public class ClientProxy {
         mJsExecutor.onTransact(script);
     }
 
+    public void transact(InvokeInfo invokeInfo) {
+        mJsExecutor.onTransact(invokeInfo, null);
+    }
+
     public void transact(ClientRequest request) {
         mJsExecutor.onTransact(request.getInvokeInfo(), request.getParam());
     }

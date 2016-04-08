@@ -18,11 +18,6 @@ public class JsExecutor {
     public JsExecutor(JsBridge mJsBridge) {
         this.mJsBridge = mJsBridge;
     }
-//
-//    public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
-//        String script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfoMarshalling, paramMarshalling);
-//        onTransact(script);
-//    }
 
     public void onTransact(InvokeInfo invokeInfo, Marshallable param) {
         String script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfo.toMarshalling(), param.toMarshalling());

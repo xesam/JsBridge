@@ -35,26 +35,32 @@
         },
         server_onTransact: function (to_be_invoke_unmarshalling, to_be_param_unmarshalling) {
             console.log('server_onTransact:' + to_be_invoke_unmarshalling, +":" + to_be_param_unmarshalling);
+
+            if (!to_be_invoke_unmarshalling) {
+                return;
+            }
             var invoke_info = JSON.parse(to_be_invoke_unmarshalling);
-            var server_method_params = JSON.parse(to_be_param_unmarshalling);
-            console.log('server_onTransact', invoke_info, server_method_params);
+
+            var server_method_params = null;
+            if (to_be_param_unmarshalling) {
+                server_method_params = JSON.parse(to_be_param_unmarshalling);
+            }
 
             var server_method_id = invoke_info['_server_method_id'];
             var server_method_name = invoke_info['_server_method_name'];
 
+            var targetFn = null;
+
             if (server_method_id) {//有 id 表示是回调
                 var callback = this._callbacks[server_method_id];
                 if (callback) { //找到了回调
-                    var fn = callback[server_method_name];
-                    if (fn) {
-                        fn(server_method_params);
-                    }
+                    targetFn = callback[server_method_name];
                 }
-            } else { //没有 id ，表示是要直接调用某个方法
-                var fn = window[server_method_name];
-                if (fn) {
-                    fn(server_method_params);
-                }
+            } else if (server_method_name) { //没有 id ，表示是要直接调用某个方法
+                targetFn = window[server_method_name];
+            }
+            if (targetFn) {
+                targetFn(server_method_params);
             }
         }
     };
