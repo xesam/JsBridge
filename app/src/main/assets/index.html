@@ -11,65 +11,34 @@
 </div>
 
 <script>
-    if (location.href.startsWith('http')) {
-        window.Proxy = {
-            _callbacks: {},
-            client_transact: function (server_method_name, server_method_params, client_callback) {
-                console.log(server_method_name, server_method_params, client_callback);
-                var invoke_info = {
-                    "_server_method_name": server_method_name
-                };
-                if (client_callback) {
-                    var callback_id = new Date().getTime();
-                    this._callbacks[callback_id] = client_callback;
-                    invoke_info['_client_callback'] = callback_id;
-                }
 
-                console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
-            },
-            client_transact: function (server_method_name, server_method_params, client_callback) {
-                console.log(server_method_name, server_method_params, client_callback);
-                var wrap = {
-                    "_server_method_name": server_method_name,
-                    "_server_method_params": server_method_params
-                };
-                if (client_callback) {
-                    var callback_id = new Date().getTime();
-                    this._callbacks[callback_id] = client_callback;
-                    wrap['_client_callback'] = callback_id;
-                }
-
-                var marshalling = JSON.stringify(wrap);
-                console.log(marshalling);
-            },
-            server_onTransact: function (to_be_marshalling) {
-                console.log(to_be_marshalling);
-                var marshalling = JSON.stringify(to_be_marshalling);
-                console.log(marshalling);
+    window.Proxy = {
+        _callbacks: {},
+        client_transact: function (server_method_name, server_method_params, client_callback) {
+            console.log(server_method_name, server_method_params, client_callback);
+            var invoke_info = {
+                "_server_method_name": server_method_name
+            };
+            if (client_callback) {
+                var callback_id = new Date().getTime();
+                this._callbacks[callback_id] = client_callback;
+                invoke_info['_client_callback'] = callback_id;
             }
+            window.invoker(invoke_info, server_method_params);
+        },
+        server_onTransact: function (to_be_invoke_unmarshalling, to_be_param_unmarshalling) {
+            console.log(to_be_invoke_unmarshalling, to_be_param_unmarshalling);
+            console.log(JSON.parse(to_be_invoke_unmarshalling), JSON.parse(to_be_param_unmarshalling));
+        }
+    };
+
+    if (location.href.startsWith('file')) {
+        window.invoker = function (invoke_info, server_method_params) {
+            console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };
     } else {
-        window.Proxy = {
-            _callbacks: {},
-            client_transact: function (server_method_name, server_method_params, client_callback) {
-                console.log(server_method_name, server_method_params, client_callback);
-                var invoke_info = {
-                    "_server_method_name": server_method_name
-                };
-                if (client_callback) {
-                    var callback_id = new Date().getTime();
-                    this._callbacks[callback_id] = client_callback;
-                    invoke_info['_client_callback'] = callback_id;
-                }
-
-                console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
-                JAVA_PROXY.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
-            },
-            server_onTransact: function (to_be_marshalling) {
-                console.log(to_be_marshalling);
-                var marshalling = JSON.stringify(to_be_marshalling);
-                console.log(marshalling);
-            }
+        window.invoker = function (invoke_info, server_method_params) {
+            JAVA_PROXY.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };
     }
 
@@ -87,9 +56,9 @@
         }
     };
 
-    //server
-    function server_onTransact(marshalling) {
-        console.log(marshalling);
+    //local
+    function js_fn_1() {
+        document.body.style.background = 'red';
     }
 
     //client
@@ -119,7 +88,6 @@
             }
         });
     }, false);
-
 
 </script>
 </body>

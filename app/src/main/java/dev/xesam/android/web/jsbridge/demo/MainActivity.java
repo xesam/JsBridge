@@ -10,15 +10,13 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
-import com.google.gson.internal.Streams;
 
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
+import dev.xesam.android.web.jsbridge.client.ClientRequest;
 import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
 public class MainActivity extends AppCompatActivity {
@@ -69,14 +67,15 @@ public class MainActivity extends AppCompatActivity {
         vBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new ClientProxy(vWebView).transact("hello from java");
+                ClientRequest request = new ClientRequest(null, null);
+                new ClientProxy(vWebView).transact(request);
             }
         });
 
         vBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new ClientProxy(vWebView).transact("window.js_fn_1()");
             }
         });
     }
