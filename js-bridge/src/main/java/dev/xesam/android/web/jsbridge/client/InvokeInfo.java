@@ -16,12 +16,26 @@ public class InvokeInfo {
     public static final String _SERVER_METHOD_PARAMS = "_server_method_params";
 
     private long mServerMethodId = INVALID_CALLBACK;
-    private String mserverMethodName;
+    private String mServerMethodName;
     private long mClientCallbackId = INVALID_CALLBACK;
 
-    public static InvokeInfo createServerCallback(long serverMethodId) {
+    @Deprecated
+    public static InvokeInfo createServerCallback(long callbackId) {
+        InvokeInfo invokeInfo = new InvokeInfo();
+        invokeInfo.mServerMethodId = callbackId;
+        return invokeInfo;
+    }
+
+    public static InvokeInfo createServerCallback(String callbackMthodName) {
+        InvokeInfo invokeInfo = new InvokeInfo();
+        invokeInfo.mServerMethodName = callbackMthodName;
+        return invokeInfo;
+    }
+
+    public static InvokeInfo createServerCallback(long serverMethodId, String callbackMthodName) {
         InvokeInfo invokeInfo = new InvokeInfo();
         invokeInfo.mServerMethodId = serverMethodId;
+        invokeInfo.mServerMethodName = callbackMthodName;
         return invokeInfo;
     }
 
@@ -35,7 +49,7 @@ public class InvokeInfo {
                 mServerMethodId = jsonObject.getLong(_SERVER_METHOD_ID);
             }
             if (jsonObject.has(_SERVER_METHOD_NAME)) {
-                mserverMethodName = jsonObject.getString(_SERVER_METHOD_NAME);
+                mServerMethodName = jsonObject.getString(_SERVER_METHOD_NAME);
             }
             if (jsonObject.has(_CLIENT_CALLBACK_ID)) {
                 mClientCallbackId = jsonObject.getLong(_CLIENT_CALLBACK_ID);
@@ -49,7 +63,7 @@ public class InvokeInfo {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(_SERVER_METHOD_ID, mServerMethodId);
-            jsonObject.put(_SERVER_METHOD_NAME, mserverMethodName);
+            jsonObject.put(_SERVER_METHOD_NAME, mServerMethodName);
             jsonObject.put(_CLIENT_CALLBACK_ID, mClientCallbackId);
         } catch (JSONException e) {
             e.printStackTrace();

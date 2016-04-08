@@ -10,8 +10,10 @@
         <button id="j_showPackageName">showPackageName</button>
     </p>
     <p>
-
-        <button id="j_getUser">getUser</button>
+        <button id="j_getUser_succ">getUser success</button>
+    </p>
+    <p>
+        <button id="j_getUser_error">getUser error</button>
     </p>
 </div>
 
@@ -39,7 +41,6 @@
 
             var server_method_id = invoke_info['_server_method_id'];
             var server_method_name = invoke_info['_server_method_name'];
-            server_method_name = 'success';
 
             if (server_method_id) {//有 id 表示是回调
                 var callback = this._callbacks[server_method_id];
@@ -103,14 +104,26 @@
         });
     }, false);
 
-    _$('j_getUser').addEventListener('click', function (e) {
+    _$('j_getUser_succ').addEventListener('click', function (e) {
         sdk.getUser({
-            "name_prefix": "standard_prefix",
+            "name_prefix": "standard_succ",
             "success": function (user) {
                 console.log('sdk.getUser,success:' + user.name);
             },
             "fail": function (error) {
                 console.log('sdk.getUser,fail;' + data);
+            }
+        });
+    }, false);
+
+    _$('j_getUser_error').addEventListener('click', function (e) {
+        sdk.getUser({
+            "name_prefix": "standard_error",
+            "success": function (user) {
+                console.log('sdk.getUser,success:' + user.name);
+            },
+            "fail": function (error) {
+                console.log('sdk.getUser,fail;' + error.error);
             }
         });
     }, false);

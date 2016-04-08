@@ -3,6 +3,8 @@ package dev.xesam.android.web.jsbridge.server;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import dev.xesam.android.web.jsbridge.Marshallable;
+import dev.xesam.android.web.jsbridge.client.ClientRequest;
 import dev.xesam.android.web.jsbridge.client.InvokeInfo;
 
 /**
@@ -48,11 +50,9 @@ public class ServerRequest {
         return serverMethodParams;
     }
 
-    public InvokeInfo getClientInvokeInfo() {
-        return InvokeInfo.createServerCallback(clientCallbackId);
-    }
-
-    public void triggerCallback(String paramMarshalling) {
-        mServerProxy.dispatchCallback(this, paramMarshalling);
+    public void triggerCallback(String callbackMethodName, Marshallable marshallable) {
+        InvokeInfo invokeInfo = InvokeInfo.createServerCallback(clientCallbackId, callbackMethodName);
+        ClientRequest request = new ClientRequest(invokeInfo, marshallable.toMarshalling());
+        mServerProxy.dispatchCallback(this, request);
     }
 }

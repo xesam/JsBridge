@@ -8,7 +8,6 @@ import java.util.Map;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.TransactHandler;
 import dev.xesam.android.web.jsbridge.client.ClientRequest;
-import dev.xesam.android.web.jsbridge.client.InvokeInfo;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
@@ -36,9 +35,7 @@ public class ServerProxy {
         handlers.put(transactHandler.getServerMethodName(), transactHandler);
     }
 
-    void dispatchCallback(ServerRequest serverRequest, String paramMarshalling) {
-        InvokeInfo invokeInfo = serverRequest.getClientInvokeInfo();
-        ClientRequest request = new ClientRequest(invokeInfo, paramMarshalling);
-        mJsBridge.transact(request);
+    void dispatchCallback(ServerRequest serverRequest, ClientRequest clientRequest) {
+        mJsBridge.transact(clientRequest);
     }
 }
