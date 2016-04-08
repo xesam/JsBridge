@@ -2,22 +2,33 @@ package dev.xesam.android.web.jsbridge.server;
 
 import android.webkit.JavascriptInterface;
 
-import dev.xesam.android.web.jsbridge.RequestDispatcher;
+import java.util.HashMap;
+import java.util.Map;
+
+import dev.xesam.android.web.jsbridge.TransactHandler;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 public class ServerProxy {
-    private RequestDispatcher mRequestDispatcher;
     public static final String JAVA_BRIDGE = "JAVA_PROXY";
 
-    public ServerProxy(dev.xesam.android.web.jsbridge.RequestDispatcher requestDispatcher) {
-        mRequestDispatcher = requestDispatcher;
+    private Map<String, TransactHandler> handlers = new HashMap<>();
+
+    public ServerProxy() {
+
     }
 
     @JavascriptInterface
     public void onTransact(final String marshalling) {
         ServerUnmarshalling serverUnmarshalling = new ServerUnmarshalling(marshalling);
-        mRequestDispatcher.dispatch(serverUnmarshalling);
+        TransactHandler transactHandler = handlers.get(serverUnmarshalling.getServerMethodName());
+        if (transactHandler != null) {
+            transactHandler.handle();
+        }
+    }
+
+    public void register(TransactHandler transactHandler) {
+        handlers.put(transactHandler.getName(), transactHandler);
     }
 }

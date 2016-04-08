@@ -10,20 +10,23 @@ import dev.xesam.android.web.jsbridge.server.ServerProxy;
  */
 public final class JsBridge {
 
-    private TransactDispatcher mTransactDispatcher;
+    private WebView mWebView;
 
-    public JsBridge() {
-        this.mTransactDispatcher = new TransactDispatcher();
+    private ServerProxy mServerProxy;
+
+    public JsBridge(WebView webView) {
+        this.mWebView = webView;
+        this.mServerProxy = new ServerProxy();
+        inject(mWebView);
     }
 
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface"})
-    public static void injectWebView(WebView webView) {
+    public void inject(WebView webView) {
         webView.getSettings().setJavaScriptEnabled(true);
-        ServerProxy serverProxy = new ServerProxy();
-        webView.addJavascriptInterface(serverProxy, ServerProxy.JAVA_BRIDGE);
+        webView.addJavascriptInterface(mServerProxy, ServerProxy.JAVA_BRIDGE);
     }
 
-    public void resigter(TransactHandler transactHandler) {
-        mTransactDispatcher.register(transactHandler);
+    public void register(TransactHandler transactHandler) {
+        mServerProxy.register(transactHandler);
     }
 }

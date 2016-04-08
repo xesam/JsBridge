@@ -13,9 +13,20 @@
 <script>
     if (location.href.startsWith('http')) {
         window.Proxy = {
-            client_transact: function (to_be_marshalling) {
-                console.log(to_be_marshalling);
-                var marshalling = JSON.stringify(to_be_marshalling);
+            _callbacks: {},
+            client_transact: function (server_method_name, server_method_params, client_callback) {
+                console.log(server_method_name, server_method_params, client_callback);
+                var wrap = {
+                    "_server_method_name": server_method_name,
+                    "_server_method_params": server_method_params
+                };
+                if (client_callback) {
+                    var callback_id = new Date().getTime();
+                    this._callbacks[callback_id] = client_callback;
+                    wrap['_client_callback'] = callback_id;
+                }
+
+                var marshalling = JSON.stringify(wrap);
                 console.log(marshalling);
             },
             server_onTransact: function (to_be_marshalling) {
@@ -26,9 +37,21 @@
         };
     } else {
         window.Proxy = {
-            client_transact: function (to_be_marshalling) {
-                console.log(to_be_marshalling);
-                var marshalling = JSON.stringify(to_be_marshalling);
+            _callbacks: {},
+            client_transact: function (server_method_name, server_method_params, client_callback) {
+                console.log(server_method_name, server_method_params, client_callback);
+                var wrap = {
+                    "_server_method_name": server_method_name,
+                    "_server_method_params": server_method_params
+                };
+                if (client_callback) {
+                    var callback_id = new Date().getTime();
+                    this._callbacks[callback_id] = client_callback;
+                    wrap['_client_callback'] = callback_id;
+                }
+
+                var marshalling = JSON.stringify(wrap);
+                console.log(marshalling);
                 JAVA_PROXY.onTransact(marshalling);
             },
             server_onTransact: function (to_be_marshalling) {
@@ -38,29 +61,21 @@
             }
         };
     }
-</script>
 
-<script>
     var sdk = {
-        getPackageName: function (cbk) {
-            var wrap = {
-                "_server_method_name": "getPackageName",
-                "_server_method_params": {}
-
-            };
-            window.Proxy.client_transact(wrap);
+        getPackageName: function (params) {
+            var _server_method_name = 'getPackageName';
+            var _server_method_params = params;
+            var _client_callback = params;
+            window.Proxy.client_transact(_server_method_name, _server_method_params, _client_callback);
         }
     }
-</script>
 
-<script>
     //server
     function server_onTransact(marshalling) {
         console.log(marshalling);
     }
-</script>
 
-<script>
     //client
     function _$(id) {
         return document.getElementById(id);
