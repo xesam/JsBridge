@@ -32,7 +32,9 @@
         }
     };
 
-    if (location.href.startsWith('file')) {
+    console.log(location.href);
+
+    if (location.href.indexOf("workspace") != -1) {
         window.invoker = function (invoke_info, server_method_params) {
             console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };

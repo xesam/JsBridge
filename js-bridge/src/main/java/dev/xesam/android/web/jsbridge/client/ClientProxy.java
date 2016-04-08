@@ -22,7 +22,7 @@ public class ClientProxy {
         transact(request.getInvokeInfoMarshalling(), request.getParamMarshalling());
     }
 
-    public void transact(String invokeInfoMarshalling, String paramMarshalling) {
+    private void transact(String invokeInfoMarshalling, String paramMarshalling) {
         String script = String.format(Locale.getDefault(), "window.Proxy.server_onTransact('%s', '%s')", invokeInfoMarshalling, paramMarshalling);
         transact(script);
     }
