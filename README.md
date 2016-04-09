@@ -36,7 +36,7 @@ Android 的默认 Sdk 中， Java 与 Js 的一切交互都是依托于 WebView 
 ```java
 
     class JavaProxy{
-        @JavascriptInterface //注意这里的注解。处于安全的考虑，4.1 之后强制要求，不然无法从 js 中发起调用
+        @JavascriptInterface //注意这里的注解。处于安全的考虑，4.2 之后强制要求，不然无法从 js 中发起调用
         public void javaFn(){
             //xxxxxx
         };
