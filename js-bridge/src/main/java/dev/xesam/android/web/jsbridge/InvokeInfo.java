@@ -105,4 +105,8 @@ public class InvokeInfo implements Marshallable {
     public long getClientCallbackId() {
         return mClientCallbackId;
     }
+
+    public void setClientCallbackId(long mClientCallbackId) {
+        this.mClientCallbackId = mClientCallbackId;
+    }
 }

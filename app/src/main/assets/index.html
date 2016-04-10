@@ -19,6 +19,31 @@
 
 <script>
 
+    function InvokeInfo(invoke_info) {
+        this.server_method_id = invoke_info['_server_method_id'];
+        this.server_method_name = invoke_info['_server_method_name'];
+
+        this.invoke = function (server_method_params) {
+            var targetFn = null;
+
+            if (this.server_method_id && this.server_method_id > 0) {//有 id 表示是回调
+                var callback = window.JsExecutor._callbacks[server_method_id];
+                if (callback) { //找到了回调
+                    targetFn = callback[server_method_name];
+                }
+            } else if (this.server_method_name) { //没有 id ，表示是要直接调用某个方法
+                targetFn = window.JsExecutor._handlers[this.server_method_name] || window[this.server_method_name];
+            }
+            if (targetFn) {
+                targetFn(this, server_method_params);
+            }
+        };
+
+        this.triggerCallback = function (callbackMethodName, result) {
+//            window.JsExecutor.client_transact();
+        };
+    }
+
     window.JsExecutor = {
         _callbacks: {},
         client_transact: function (server_method_name, server_method_params, client_callback) {
@@ -37,29 +62,15 @@
         server_register: function (server_method_name, transact_handler) {
             this._handlers[server_method_name] = transact_handler;
         },
-        server_onTransact: function (invoke_info, server_method_params) {
-            console.log('server_onTransact:' + invoke_info + "###" + server_method_params);
+        server_onTransact: function (server_invoke_info, server_method_params) {
+            console.log('server_onTransact:' + server_invoke_info + "###" + server_method_params);
 
-            if (!invoke_info) {
+            if (!server_invoke_info) {
                 return;
             }
 
-            var server_method_id = invoke_info['_server_method_id'];
-            var server_method_name = invoke_info['_server_method_name'];
-
-            var targetFn = null;
-
-            if (server_method_id && server_method_id > 0) {//有 id 表示是回调
-                var callback = this._callbacks[server_method_id];
-                if (callback) { //找到了回调
-                    targetFn = callback[server_method_name];
-                }
-            } else if (server_method_name) { //没有 id ，表示是要直接调用某个方法
-                targetFn = this._handlers[server_method_name] || window[server_method_name];
-            }
-            if (targetFn) {
-                targetFn(server_method_params);
-            }
+            var invoke_info = new InvokeInfo(server_invoke_info);
+            invoke_info.invoke(server_method_params);
         }
     };
 
@@ -92,9 +103,10 @@
         document.body.style.background = 'red';
     }
 
-    window.JsExecutor.server_register('js_fn_1', function (color) {
+    window.JsExecutor.server_register('js_fn_1', function (invoke_info, color) {
         console.log(color);
         document.body.style.background = color;
+        invoke_info.triggerCallback('success', 'background change to ' + color);
     });
 
     //client

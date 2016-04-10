@@ -1,5 +1,10 @@
 package dev.xesam.android.web.jsbridge.client;
 
+import android.os.SystemClock;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
 
@@ -8,6 +13,7 @@ import dev.xesam.android.web.jsbridge.JsBridge;
  */
 public class ClientProxy {
 
+    private Map<Long, Callback<?>> callbacks = new HashMap<>();
     private JsBridge mJsBridge;
     private JsExecutor mJsExecutor;
 
@@ -25,6 +31,11 @@ public class ClientProxy {
     }
 
     public void transact(ClientRequest request) {
+        if (request.getCallback() != null) {
+            final long callbackId = SystemClock.elapsedRealtime();
+            callbacks.put(callbackId, request.getCallback());
+            request.getInvokeInfo().setClientCallbackId(callbackId);
+        }
         mJsExecutor.transact(request.getInvokeInfo(), request.getParam());
     }
 }

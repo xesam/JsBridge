@@ -42,7 +42,7 @@ public final class JsBridge {
 
     public void invoke(String method, Marshallable param, Callback callback) {
         InvokeInfo invokeInfo = InvokeInfo.createServerInvoke(method);
-        ClientRequest clientRequest = new ClientRequest(invokeInfo, param);
+        ClientRequest clientRequest = new ClientRequest(invokeInfo, param, callback);
         mClientProxy.transact(clientRequest);
     }
 
