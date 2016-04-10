@@ -15,6 +15,8 @@ import dev.xesam.android.web.jsbridge.Marshallable;
  */
 public class JsExecutor {
 
+    public static final String JS_EXECUTOR = "window.JsExecutor";
+
     private JsBridge mJsBridge;
 
     public JsExecutor(JsBridge mJsBridge) {
@@ -24,9 +26,9 @@ public class JsExecutor {
     public void transact(InvokeInfo invokeInfo, Marshallable param) {
         String script;
         if (param == null) {
-            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact(%s)", invokeInfo.toMarshalling());
+            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s)", JS_EXECUTOR, invokeInfo.toMarshalling());
         } else {
-            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact(%s, %s)", invokeInfo.toMarshalling(), param.toMarshalling());
+            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s, %s)", JS_EXECUTOR, invokeInfo.toMarshalling(), param.toMarshalling());
         }
 
         transact(script);
