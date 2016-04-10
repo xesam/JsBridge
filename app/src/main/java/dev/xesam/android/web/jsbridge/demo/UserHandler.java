@@ -7,10 +7,10 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import dev.xesam.android.web.jsbridge.MarshallableException;
-import dev.xesam.android.web.jsbridge.MarshallableString;
+import dev.xesam.android.web.jsbridge.MarshallableObject;
 import dev.xesam.android.web.jsbridge.TransactHandler;
 import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
@@ -40,11 +40,14 @@ public class UserHandler implements TransactHandler {
                 Map<String, String> map = new Gson().fromJson(serverParams, Map.class);
                 String prefix = map.get("name_prefix");
                 Toast.makeText(mContext, "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
-                final String userMarshalling = new Gson().toJson(user);
                 if ("standard_error".equals(prefix)) {
-                    serverRequest.triggerCallback("fail", new MarshallableException("{\"error\" : \"这里是错误消息\"}"));
+                    Map<String, String> map1 = new HashMap<>();
+                    map1.put("error", "这里是错误消息");
+                    String userMarshalling = new Gson().toJson(map1);
+                    serverRequest.triggerCallback("fail", new MarshallableObject(userMarshalling));
                 } else {
-                    serverRequest.triggerCallback("success", new MarshallableString(userMarshalling));
+                    String userMarshalling = new Gson().toJson(user);
+                    serverRequest.triggerCallback("success", new MarshallableObject(userMarshalling));
                 }
             }
         });

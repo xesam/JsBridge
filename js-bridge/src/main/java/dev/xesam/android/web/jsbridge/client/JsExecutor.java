@@ -24,15 +24,16 @@ public class JsExecutor {
     public void transact(InvokeInfo invokeInfo, Marshallable param) {
         String script;
         if (param == null) {
-            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s')", invokeInfo.toMarshalling());
+            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact(%s)", invokeInfo.toMarshalling());
         } else {
-            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact('%s', '%s')", invokeInfo.toMarshalling(), param.toMarshalling());
+            script = String.format(Locale.getDefault(), "window.JsExecutor.server_onTransact(%s, %s)", invokeInfo.toMarshalling(), param.toMarshalling());
         }
 
         transact(script);
     }
 
     public void transact(String script) {
+        Log.e(getClass().getSimpleName(), script);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mJsBridge.getWebView().evaluateJavascript(script, new ValueCallback<String>() {
                 @Override

@@ -37,17 +37,11 @@
         server_register: function (server_method_name, transact_handler) {
             this._handlers[server_method_name] = transact_handler;
         },
-        server_onTransact: function (to_be_invoke_unmarshalling, to_be_param_unmarshalling) {
-            console.log('server_onTransact:' + to_be_invoke_unmarshalling, +":" + to_be_param_unmarshalling);
+        server_onTransact: function (invoke_info, server_method_params) {
+            console.log('server_onTransact:' + invoke_info + "###" + server_method_params);
 
-            if (!to_be_invoke_unmarshalling) {
+            if (!invoke_info) {
                 return;
-            }
-            var invoke_info = JSON.parse(to_be_invoke_unmarshalling);
-
-            var server_method_params = null;
-            if (to_be_param_unmarshalling) {
-                server_method_params = JSON.parse(to_be_param_unmarshalling);
             }
 
             var server_method_id = invoke_info['_server_method_id'];
@@ -98,8 +92,9 @@
         document.body.style.background = 'red';
     }
 
-    window.JsExecutor.server_register('js_fn_1', function () {
-        document.body.style.background = 'green';
+    window.JsExecutor.server_register('js_fn_1', function (color) {
+        console.log(color);
+        document.body.style.background = color;
     });
 
     //client

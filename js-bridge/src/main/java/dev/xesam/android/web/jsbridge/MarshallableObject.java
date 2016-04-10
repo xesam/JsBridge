@@ -3,12 +3,11 @@ package dev.xesam.android.web.jsbridge;
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-public class MarshallableException extends Exception implements Marshallable {
+public class MarshallableObject implements Marshallable {
 
     private String mContent;
 
-    public MarshallableException(String content) {
-        super(content);
+    public MarshallableObject(String content) {
         mContent = content;
     }
 

@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
+import dev.xesam.android.web.jsbridge.MarshallableString;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
-import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
         vBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InvokeInfo invokeInfo = InvokeInfo.createServerInvoke("js_fn_1");
-                jsBridge.transact(invokeInfo);
+                jsBridge.invoke("js_fn_1", new MarshallableString("yellow"), null);
             }
         });
 

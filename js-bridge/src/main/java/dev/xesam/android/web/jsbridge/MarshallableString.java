@@ -13,6 +13,6 @@ public class MarshallableString implements Marshallable {
 
     @Override
     public String toMarshalling() {
-        return mContent;
+        return "'" + mContent + "'";
     }
 }
