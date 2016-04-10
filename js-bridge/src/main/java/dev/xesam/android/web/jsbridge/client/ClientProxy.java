@@ -2,7 +2,6 @@ package dev.xesam.android.web.jsbridge.client;
 
 import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.JsExecutor;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
@@ -18,14 +17,14 @@ public class ClientProxy {
     }
 
     public void transact(String script) {
-        mJsExecutor.onTransact(script);
+        mJsExecutor.transact(script);
     }
 
     public void transact(InvokeInfo invokeInfo) {
-        mJsExecutor.onTransact(invokeInfo, null);
+        mJsExecutor.transact(invokeInfo, null);
     }
 
     public void transact(ClientRequest request) {
-        mJsExecutor.onTransact(request.getInvokeInfo(), request.getParam());
+        mJsExecutor.transact(request.getInvokeInfo(), request.getParam());
     }
 }
