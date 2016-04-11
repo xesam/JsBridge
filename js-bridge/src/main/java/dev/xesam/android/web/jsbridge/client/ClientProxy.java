@@ -42,7 +42,7 @@ public class ClientProxy {
     /**
      * js -> java ： 回调 java 方法
      */
-    public void dispatchCallback(InvokeInfo invokeInfo, String paramMarshalling) {
+    public void dispatchClientCallback(InvokeInfo invokeInfo, String paramMarshalling) {
         if (callbacks.containsKey(invokeInfo.getInvokeId())) {
             ClientCallback clientCallback = callbacks.get(invokeInfo.getInvokeId());
             clientCallback.onReceiveResult(invokeInfo.getInvokeName(), clientCallback.getResult(paramMarshalling));

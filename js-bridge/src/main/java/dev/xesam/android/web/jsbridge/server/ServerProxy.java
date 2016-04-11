@@ -54,7 +54,7 @@ public class ServerProxy {
      * js -> java ： js 回调 java 方法
      */
     private void dispatchCallbackInvoke(ServerRequest serverRequest) {
-        mJsBridge.dispatchCallback(serverRequest.getInvokeInfo(), serverRequest.getInvokeParam());
+        mJsBridge.dispatchClientCallback(serverRequest.getInvokeInfo(), serverRequest.getInvokeParam());
     }
 
     /**
