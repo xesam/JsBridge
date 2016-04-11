@@ -1,6 +1,6 @@
 package dev.xesam.android.web.jsbridge.server;
 
-import dev.xesam.android.web.jsbridge.InvokeInfo;
+import dev.xesam.android.web.jsbridge.TransactInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.Marshallable;
 
@@ -22,7 +22,7 @@ public class ServerCallback {
      * java -> js ： 触发 js 回调
      */
     public void invoke(String callbackName, Marshallable callbackParam) {
-        InvokeInfo invokeInfo = InvokeInfo.createCallbackInvoke(mCallbackId, callbackName);
-        mJsBridge.dispatchServerCallback(invokeInfo, callbackParam);
+        TransactInfo transactInfo = TransactInfo.createCallbackInvoke(mCallbackId, callbackName);
+        mJsBridge.dispatchServerCallback(transactInfo, callbackParam);
     }
 }

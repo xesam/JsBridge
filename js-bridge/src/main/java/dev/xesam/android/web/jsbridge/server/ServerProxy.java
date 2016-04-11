@@ -6,7 +6,7 @@ import android.webkit.JavascriptInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.xesam.android.web.jsbridge.InvokeInfo;
+import dev.xesam.android.web.jsbridge.TransactInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
 
 /**
@@ -25,11 +25,11 @@ public class ServerProxy {
     @JavascriptInterface
     public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
         Log.e("ServerProxy#onTransact", invokeInfoMarshalling + "/" + paramMarshalling);
-        InvokeInfo invokeInfo = InvokeInfo.parse(invokeInfoMarshalling);
-        if (invokeInfo.isCallback()) {
-            dispatchCallbackInvoke(invokeInfo, paramMarshalling);
+        TransactInfo transactInfo = TransactInfo.parse(invokeInfoMarshalling);
+        if (transactInfo.isCallback()) {
+            dispatchCallbackInvoke(transactInfo, paramMarshalling);
         } else {
-            dispatchDirectInvoke(invokeInfo, paramMarshalling);
+            dispatchDirectInvoke(transactInfo, paramMarshalling);
         }
     }
 
@@ -40,10 +40,10 @@ public class ServerProxy {
     /**
      * js -> java ： js 直接调用 java 方法
      */
-    private void dispatchDirectInvoke(InvokeInfo invokeInfo, String paramMarshalling) {
-        ServerHandler serverHandler = handlers.get(invokeInfo.getInvokeName());
+    private void dispatchDirectInvoke(TransactInfo transactInfo, String paramMarshalling) {
+        ServerHandler serverHandler = handlers.get(transactInfo.getInvokeName());
         if (serverHandler != null) {
-            ServerCallback serverCallback = new ServerCallback(mJsBridge, invokeInfo.getCallbackId());
+            ServerCallback serverCallback = new ServerCallback(mJsBridge, transactInfo.getCallbackId());
             serverHandler.handle(paramMarshalling, serverCallback);
         }
     }
@@ -51,7 +51,7 @@ public class ServerProxy {
     /**
      * js -> java ： js 回调 java 方法
      */
-    private void dispatchCallbackInvoke(InvokeInfo invokeInfo, String paramMarshalling) {
-        mJsBridge.dispatchClientCallback(invokeInfo, paramMarshalling);
+    private void dispatchCallbackInvoke(TransactInfo transactInfo, String paramMarshalling) {
+        mJsBridge.dispatchClientCallback(transactInfo, paramMarshalling);
     }
 }

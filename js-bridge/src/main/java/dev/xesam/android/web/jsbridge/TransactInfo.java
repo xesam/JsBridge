@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * not include param
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-public class InvokeInfo implements Marshallable {
+public class TransactInfo implements Marshallable {
     public static final long INVALID_INVOKE_ID = 0;
     public static final long INVALID_CALLBACK_ID = 0;
 
@@ -26,29 +26,29 @@ public class InvokeInfo implements Marshallable {
     /**
      * 直接调用 js
      */
-    public static InvokeInfo createDirectInvoke(String invokeName) {
-        InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mInvokeName = invokeName;
-        return invokeInfo;
+    public static TransactInfo createDirectInvoke(String invokeName) {
+        TransactInfo transactInfo = new TransactInfo();
+        transactInfo.mInvokeName = invokeName;
+        return transactInfo;
     }
 
     /**
      * 回调 js
      */
-    public static InvokeInfo createCallbackInvoke(long callbackId, String callbackName) {
-        InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mInvokeId = callbackId;
-        invokeInfo.mInvokeName = callbackName;
-        return invokeInfo;
+    public static TransactInfo createCallbackInvoke(long callbackId, String callbackName) {
+        TransactInfo transactInfo = new TransactInfo();
+        transactInfo.mInvokeId = callbackId;
+        transactInfo.mInvokeName = callbackName;
+        return transactInfo;
     }
 
-    public static InvokeInfo parse(String marshalling) {
-        InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.unmarshalling(marshalling);
-        return invokeInfo;
+    public static TransactInfo parse(String marshalling) {
+        TransactInfo transactInfo = new TransactInfo();
+        transactInfo.unmarshalling(marshalling);
+        return transactInfo;
     }
 
-    private InvokeInfo() {
+    private TransactInfo() {
     }
 
     private void unmarshalling(String marshalling) {

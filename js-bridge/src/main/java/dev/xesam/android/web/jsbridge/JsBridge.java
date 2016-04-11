@@ -65,21 +65,21 @@ public final class JsBridge {
      * invoke js_server method
      */
     public void invoke(String invokeMethod, Marshallable param, ClientCallback clientCallback) {
-        InvokeInfo invokeInfo = InvokeInfo.createDirectInvoke(invokeMethod);
-        mClientProxy.transact(invokeInfo, param, clientCallback);
+        TransactInfo transactInfo = TransactInfo.createDirectInvoke(invokeMethod);
+        mClientProxy.transact(transactInfo, param, clientCallback);
     }
 
     /**
      * dispatch java_client callback
      */
-    public void dispatchClientCallback(InvokeInfo invokeInfo, String paramMarshalling) {
-        mClientProxy.dispatchClientCallback(invokeInfo, paramMarshalling);
+    public void dispatchClientCallback(TransactInfo transactInfo, String paramMarshalling) {
+        mClientProxy.dispatchClientCallback(transactInfo, paramMarshalling);
     }
 
     /**
      * dispatch java_server callback
      */
-    public void dispatchServerCallback(InvokeInfo invokeInfo, Marshallable invokeParam) {
-        mClientProxy.transact(invokeInfo, invokeParam, null);
+    public void dispatchServerCallback(TransactInfo transactInfo, Marshallable invokeParam) {
+        mClientProxy.transact(transactInfo, invokeParam, null);
     }
 }

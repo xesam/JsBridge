@@ -6,7 +6,7 @@ import android.webkit.ValueCallback;
 
 import java.util.Locale;
 
-import dev.xesam.android.web.jsbridge.InvokeInfo;
+import dev.xesam.android.web.jsbridge.TransactInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.Marshallable;
 
@@ -23,12 +23,12 @@ class JsExecutor {
         this.mJsBridge = mJsBridge;
     }
 
-    public void transact(InvokeInfo invokeInfo, Marshallable param) {
+    public void transact(TransactInfo transactInfo, Marshallable param) {
         String script;
         if (param == null) {
-            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s)", JS_EXECUTOR, invokeInfo.toMarshalling());
+            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s)", JS_EXECUTOR, transactInfo.toMarshalling());
         } else {
-            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s, %s)", JS_EXECUTOR, invokeInfo.toMarshalling(), param.toMarshalling());
+            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s, %s)", JS_EXECUTOR, transactInfo.toMarshalling(), param.toMarshalling());
         }
 
         transact(script);
