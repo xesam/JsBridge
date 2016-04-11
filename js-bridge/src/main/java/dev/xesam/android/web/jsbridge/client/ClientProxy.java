@@ -13,7 +13,7 @@ import dev.xesam.android.web.jsbridge.JsBridge;
  */
 public class ClientProxy {
 
-    private Map<Long, Callback<?>> callbacks = new HashMap<>();
+    private Map<Long, ClientCallback<?>> callbacks = new HashMap<>();
     private JsBridge mJsBridge;
     private JsExecutor mJsExecutor;
 
@@ -44,8 +44,8 @@ public class ClientProxy {
      */
     public void dispatchCallback(InvokeInfo invokeInfo, String paramMarshalling) {
         if (callbacks.containsKey(invokeInfo.getInvokeId())) {
-            Callback callback = callbacks.get(invokeInfo.getInvokeId());
-            callback.onReceiveResult(invokeInfo.getInvokeName(), paramMarshalling);
+            ClientCallback clientCallback = callbacks.get(invokeInfo.getInvokeId());
+            clientCallback.onReceiveResult(invokeInfo.getInvokeName(), clientCallback.getResult(paramMarshalling));
         }
     }
 }

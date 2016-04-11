@@ -12,7 +12,7 @@ import android.widget.Toast;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.MarshallableString;
 import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
-import dev.xesam.android.web.jsbridge.client.Callback;
+import dev.xesam.android.web.jsbridge.client.ClientCallback;
 import dev.xesam.android.web.jsbridge.server.ServerRequest;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,12 +47,17 @@ public class MainActivity extends AppCompatActivity {
         vBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jsBridge.invoke("js_fn_1", new MarshallableString("yellow"), new Callback<String>() {
+                jsBridge.invoke("js_fn_1", new MarshallableString("yellow"), new ClientCallback<String>() {
                     @Override
-                    public void onReceiveResult(String invokeName, String result) {
+                    public void onReceiveResult(String invokeName, String invokeParam) {
                         if ("success".equals(invokeName)) {
-                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), invokeParam, Toast.LENGTH_SHORT).show();
                         }
+                    }
+
+                    @Override
+                    public String getResult(String param) {
+                        return param;
                     }
                 });
             }

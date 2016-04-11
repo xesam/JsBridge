@@ -13,7 +13,7 @@ import dev.xesam.android.web.jsbridge.Marshallable;
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-public class JsExecutor {
+class JsExecutor {
 
     public static final String JS_EXECUTOR = "window.JsExecutor";
 

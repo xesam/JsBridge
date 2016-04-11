@@ -10,7 +10,7 @@ public class ClientRequest {
 
     private InvokeInfo mInvokeInfo;
     private Marshallable mInvokeParam;
-    private Callback<?> mCallback;
+    private ClientCallback<?> mClientCallback;
 
     public ClientRequest(InvokeInfo invokeInfo) {
         this(invokeInfo, null);
@@ -21,10 +21,10 @@ public class ClientRequest {
         mInvokeParam = param;
     }
 
-    public ClientRequest(InvokeInfo invokeInfo, Marshallable param, Callback<?> callback) {
+    public ClientRequest(InvokeInfo invokeInfo, Marshallable param, ClientCallback<?> clientCallback) {
         mInvokeInfo = invokeInfo;
         mInvokeParam = param;
-        mCallback = callback;
+        mClientCallback = clientCallback;
     }
 
     public InvokeInfo getInvokeInfo() {
@@ -35,7 +35,7 @@ public class ClientRequest {
         return mInvokeParam;
     }
 
-    public Callback<?> getCallback() {
-        return mCallback;
+    public ClientCallback<?> getCallback() {
+        return mClientCallback;
     }
 }
