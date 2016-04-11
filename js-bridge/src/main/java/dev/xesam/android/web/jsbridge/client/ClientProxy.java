@@ -7,6 +7,7 @@ import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
+import dev.xesam.android.web.jsbridge.Marshallable;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
@@ -26,26 +27,23 @@ public class ClientProxy {
         mJsExecutor.transact(script);
     }
 
-    public void transact(InvokeInfo invokeInfo) {
-        mJsExecutor.transact(invokeInfo, null);
-    }
-
-    public void transact(ClientRequest request) {
-        if (request.getCallback() != null) {
+    public void transact(InvokeInfo invokeInfo, Marshallable invokeParam, ClientCallback<?> clientCallback) {
+        if (clientCallback != null) {
             final long callbackId = SystemClock.elapsedRealtime();
-            callbacks.put(callbackId, request.getCallback());
-            request.getInvokeInfo().setCallbackId(callbackId);
+            callbacks.put(callbackId, clientCallback);
+            invokeInfo.setCallbackId(callbackId);
         }
-        mJsExecutor.transact(request.getInvokeInfo(), request.getInvokeParam());
+        mJsExecutor.transact(invokeInfo, invokeParam);
     }
 
     /**
      * js -> java ： 回调 java 方法
      */
     public void dispatchClientCallback(InvokeInfo invokeInfo, String paramMarshalling) {
-        if (callbacks.containsKey(invokeInfo.getInvokeId())) {
-            ClientCallback clientCallback = callbacks.get(invokeInfo.getInvokeId());
+        ClientCallback clientCallback = callbacks.get(invokeInfo.getInvokeId());
+        if (clientCallback != null) {
             clientCallback.onReceiveResult(invokeInfo.getInvokeName(), clientCallback.getResult(paramMarshalling));
+            callbacks.remove(invokeInfo.getInvokeId());
         }
     }
 }

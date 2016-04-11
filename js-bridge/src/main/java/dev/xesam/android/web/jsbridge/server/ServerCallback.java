@@ -3,7 +3,6 @@ package dev.xesam.android.web.jsbridge.server;
 import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.Marshallable;
-import dev.xesam.android.web.jsbridge.client.ClientRequest;
 
 /**
  * java callback
@@ -24,7 +23,6 @@ public class ServerCallback {
      */
     public void invoke(String callbackName, Marshallable callbackParam) {
         InvokeInfo invokeInfo = InvokeInfo.createCallbackInvoke(mCallbackId, callbackName);
-        ClientRequest clientRequest = new ClientRequest(invokeInfo, callbackParam);
-        mJsBridge.transact(clientRequest);
+        mJsBridge.transact(invokeInfo, callbackParam, null);
     }
 }

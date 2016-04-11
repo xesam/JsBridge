@@ -5,7 +5,6 @@ import android.webkit.WebView;
 
 import dev.xesam.android.web.jsbridge.client.ClientCallback;
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
-import dev.xesam.android.web.jsbridge.client.ClientRequest;
 import dev.xesam.android.web.jsbridge.server.ServerHandler;
 import dev.xesam.android.web.jsbridge.server.ServerProxy;
 
@@ -43,8 +42,7 @@ public final class JsBridge {
 
     public void invoke(String method, Marshallable param, ClientCallback clientCallback) {
         InvokeInfo invokeInfo = InvokeInfo.createDirectInvoke(method);
-        ClientRequest clientRequest = new ClientRequest(invokeInfo, param, clientCallback);
-        mClientProxy.transact(clientRequest);
+        mClientProxy.transact(invokeInfo, param, clientCallback);
     }
 
     /**
@@ -58,11 +56,7 @@ public final class JsBridge {
         mClientProxy.transact(script);
     }
 
-    public void transact(InvokeInfo invokeInfo) {
-        mClientProxy.transact(invokeInfo);
-    }
-
-    public void transact(ClientRequest request) {
-        mClientProxy.transact(request);
+    public void transact(InvokeInfo invokeInfo, Marshallable invokeParam, ClientCallback<?> clientCallback) {
+        mClientProxy.transact(invokeInfo, invokeParam, clientCallback);
     }
 }

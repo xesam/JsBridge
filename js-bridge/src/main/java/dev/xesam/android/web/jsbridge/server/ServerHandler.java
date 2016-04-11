@@ -1,7 +1,5 @@
 package dev.xesam.android.web.jsbridge.server;
 
-import dev.xesam.android.web.jsbridge.server.ServerCallback;
-
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
