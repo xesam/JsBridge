@@ -23,6 +23,6 @@ public class ServerCallback {
      */
     public void invoke(String callbackName, Marshallable callbackParam) {
         InvokeInfo invokeInfo = InvokeInfo.createCallbackInvoke(mCallbackId, callbackName);
-        mJsBridge.transact(invokeInfo, callbackParam, null);
+        mJsBridge.dispatchServerCallback(invokeInfo, callbackParam);
     }
 }

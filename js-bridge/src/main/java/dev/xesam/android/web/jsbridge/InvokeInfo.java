@@ -44,16 +44,6 @@ public class InvokeInfo implements Marshallable {
         return invokeInfo;
     }
 
-    /**
-     * 回调 js
-     */
-    public static InvokeInfo createCallbackInvoke(InvokeInfo directInvoke, String callbackName) {
-        InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mInvokeId = directInvoke.mCallbackId;
-        invokeInfo.mInvokeName = callbackName;
-        return invokeInfo;
-    }
-
     public static InvokeInfo parse(String marshalling) {
         InvokeInfo invokeInfo = new InvokeInfo();
         invokeInfo.unmarshalling(marshalling);

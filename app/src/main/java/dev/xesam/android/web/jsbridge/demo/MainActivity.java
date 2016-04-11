@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         vBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jsBridge.transact("window.js_fn_1()");
+                jsBridge.eval("window.js_fn_1()");
             }
         });
     }

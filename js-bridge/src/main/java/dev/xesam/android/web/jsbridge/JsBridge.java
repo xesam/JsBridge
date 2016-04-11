@@ -40,23 +40,46 @@ public final class JsBridge {
         mServerProxy.register(serverHandler);
     }
 
-    public void invoke(String method, Marshallable param, ClientCallback clientCallback) {
-        InvokeInfo invokeInfo = InvokeInfo.createDirectInvoke(method);
+    /**
+     * eval js code segment
+     */
+    public void eval(String script) {
+        mClientProxy.transact(script);
+    }
+
+    /**
+     * invoke js_server method
+     */
+    public void invoke(String invokeMethod) {
+        invoke(invokeMethod, null);
+    }
+
+    /**
+     * invoke js_server method
+     */
+    public void invoke(String invokeMethod, Marshallable param) {
+        invoke(invokeMethod, param, null);
+    }
+
+    /**
+     * invoke js_server method
+     */
+    public void invoke(String invokeMethod, Marshallable param, ClientCallback clientCallback) {
+        InvokeInfo invokeInfo = InvokeInfo.createDirectInvoke(invokeMethod);
         mClientProxy.transact(invokeInfo, param, clientCallback);
     }
 
     /**
-     * dispatch js callback
+     * dispatch java_client callback
      */
     public void dispatchClientCallback(InvokeInfo invokeInfo, String paramMarshalling) {
         mClientProxy.dispatchClientCallback(invokeInfo, paramMarshalling);
     }
 
-    public void transact(String script) {
-        mClientProxy.transact(script);
-    }
-
-    public void transact(InvokeInfo invokeInfo, Marshallable invokeParam, ClientCallback<?> clientCallback) {
-        mClientProxy.transact(invokeInfo, invokeParam, clientCallback);
+    /**
+     * dispatch java_server callback
+     */
+    public void dispatchServerCallback(InvokeInfo invokeInfo, Marshallable invokeParam) {
+        mClientProxy.transact(invokeInfo, invokeParam, null);
     }
 }
