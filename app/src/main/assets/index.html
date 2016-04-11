@@ -19,112 +19,122 @@
 
 <script>
 
-    function TransactInfo(raw_transact_info) {
-        this.invoke_id = raw_transact_info['_invoke_id'];
-        this.invoke_name = raw_transact_info['_invoke_name'];
+    window.JavaBridge = (function () {
 
-        this.callback_id = raw_transact_info['_callback_id'];
-        this.callback_name = raw_transact_info['_callback_name'];
-    }
+        var _INVOKE_ID = '_invoke_id';
+        var _INVOKE_NAME = '_invoke_name';
+        var _CALLBACK_ID = '_callback_id';
+        var _CALLBACK_NAME = '_callback_name';
 
-    TransactInfo.prototype = {
-        construnctor: TransactInfo,
-        toJSON: function () {
-            return {
-                "_invoke_id": this.invoke_id,
-                "_invoke_name": this.invoke_name,
-                "_callback_id": this.callback_id,
-                "_callback_name": this.callback_name,
-            }
-        },
-        isCallback: function () {
-            return this.invoke_id && this.invoke_id > 0;
-        },
-        invoke: function (invoke_param) {
-            if (this.isCallback()) {
-                var callback = window.JavaBridge._callbacks[this.invoke_id];
-                if (callback) { //找到了回调
-                    var targetFn = callback[this.invoke_name];
+        var _callbacks = {};
+        var _handlers = {};
+
+        function TransactInfo(invokeId, invokeName, callbackId, callbackName) {
+            this.invokeId = invokeId;
+            this.invokeName = invokeName;
+
+            this.callbackId = callbackId;
+            this.callbackName = callbackName;
+        }
+
+        TransactInfo.prototype = {
+            construnctor: TransactInfo,
+
+            toJSON: function () {
+                var ret = {};
+                ret[_INVOKE_ID] = this.invokeId;
+                ret[_INVOKE_NAME] = this.invokeName;
+                ret[_CALLBACK_ID] = this.callbackId;
+                ret[_CALLBACK_NAME] = this.callbackName;
+                return ret;
+            },
+
+            parse: function (rawTransactInfo) {
+                this.invokeId = rawTransactInfo[_INVOKE_ID];
+                this.invokeName = rawTransactInfo[_INVOKE_NAME];
+
+                this.callbackId = rawTransactInfo[_CALLBACK_ID];
+                this.callbackName = rawTransactInfo[_CALLBACK_NAME];
+            },
+
+            isCallback: function () {
+                return this.invokeId && this.invokeId > 0;
+            },
+
+            invoke: function (invokeParam) {
+                if (this.isCallback()) {
+                    var callback = _callbacks[this.invokeId];
+                    if (callback) { //找到了回调
+                        var targetFn = callback[this.invokeName];
+                        if (targetFn) {
+                            targetFn(invokeParam);
+                        }
+                        delete _callbacks[this.invokeId];
+                    }
+                } else {
+                    var targetFn = _handlers[this.invokeName] || window[this.invokeName];
                     if (targetFn) {
-                        targetFn(invoke_param);
+                        targetFn(this, invokeParam);
                     }
                 }
-            } else {
-                var targetFn = window.JavaBridge._handlers[this.invoke_name] || window[this.invoke_name];
-                if (targetFn) {
-                    targetFn(this, invoke_param);
+            },
+
+            //js -> java
+            triggerCallback: function (callbackName, callbackParam) {
+                var transactInfo = new TransactInfo(this.callbackId, callbackName);
+                javaOnTransact(transactInfo, callbackParam);
+            }
+        };
+
+        function javaOnTransact(transactInfo, invokeParam) {
+            console.log("javaOnTransact:" + JSON.stringify(transactInfo) + ":" + JSON.stringify(invokeParam));
+            JavaExecutor.onTransact(JSON.stringify(transactInfo), JSON.stringify(invokeParam));
+        }
+
+        return {
+            invoke: function (invokeName, invokeParam, clientCallback) {
+                var _callbackId = 0;
+                if (clientCallback) {
+                    _callbackId = new Date().getTime();
+                    _callbacks[_callbackId] = clientCallback;
                 }
+                var transactInfo = new TransactInfo(0, invokeName, _callbackId, null);
+                javaOnTransact(transactInfo, invokeParam);
+            },
+
+            serverRegister: function (handlerName, transactHandler) {
+                _handlers[handlerName] = transactHandler;
+            },
+
+            serverOnTransact: function (rawTransactInfo, invokeParam) {
+                console.log('serverOnTransact:' + JSON.stringify(rawTransactInfo) + "###" + JSON.stringify(invokeParam));
+
+                if (!rawTransactInfo) {
+                    return;
+                }
+                var transactInfo = new TransactInfo();
+                transactInfo.parse(rawTransactInfo);
+
+                console.log(JSON.stringify(transactInfo));
+
+                transactInfo.invoke(invokeParam);
             }
-        },
-
-        //js -> java
-        triggerCallback: function (callback_name, callback_param) {
-            var transact_info = new TransactInfo({
-                "_invoke_id": this.callback_id,
-                "_invoke_name": callback_name
-            });
-            window.JavaBridge.dispatchServerCallback(transact_info, callback_param);
-        }
-    };
-
-    window.JavaBridge = {
-        _callbacks: {},
-
-        invoke: function (invoke_name, invoke_param, client_callback) {
-            var invoke_info = {
-                "_invoke_name": invoke_name
-            };
-            if (client_callback) {
-                var callback_id = new Date().getTime();
-                this._callbacks[callback_id] = client_callback;
-                invoke_info['_callback_id'] = callback_id;
-            }
-            window.invoker(new TransactInfo(invoke_info), invoke_param);
-        },
-
-        dispatchServerCallback: function (transact_info, callback_param) {//callback
-            window.invoker(transact_info, callback_param);
-        },
-
-        _handlers: {},
-        serverRegister: function (handler_name, transact_handler) {
-            this._handlers[handler_name] = transact_handler;
-        },
-
-        serverOnTransact: function (raw_transact_info, invoke_param) {
-            console.log('server_onTransact:' + JSON.stringify(raw_transact_info) + "###" + JSON.stringify(invoke_param));
-
-            if (!raw_transact_info) {
-                return;
-            }
-
-            var transact_info = new TransactInfo(raw_transact_info);
-            transact_info.invoke(invoke_param);
-        }
-    };
-
-    if (location.href.indexOf("workspace") != -1) {
-        window.invoker = function (invoke_info, server_method_params) {
-            console.log(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };
-    } else {
-        window.invoker = function (transact_info, invoke_param) {
-            JavaExecutor.onTransact(JSON.stringify(transact_info), JSON.stringify(invoke_param));
-        };
-    }
+
+    })();
 
     ///////////////////////////////////////////////////////////////////////////
     var sdk = {
         showPackageName: function (params) {
-            var _invoke_name = 'showPackageName';
-            var _invoke_param = params;
-            window.JavaBridge.invoke(_invoke_name, _invoke_param, null);
+            var _invokeName = 'showPackageName';
+            var _invokeParam = params;
+            window.JavaBridge.invoke(_invokeName, _invokeParam, null);
         },
         getUser: function (params) {
-            var _invoke_name = 'getUser';
-            var _invoke_param = params;
-            var _client_callback = params;
-            window.JavaBridge.invoke(_invoke_name, _invoke_param, _client_callback);
+            var _invokeName = 'getUser';
+            var _invokeParam = params;
+            var _clientCallback = params;
+            window.JavaBridge.invoke(_invokeName, _invokeParam, _clientCallback);
         }
     };
 
@@ -133,10 +143,10 @@
         document.body.style.background = 'red';
     }
 
-    window.JavaBridge.serverRegister('jsFn1', function (transact_info, color) {
+    window.JavaBridge.serverRegister('jsFn1', function (transactInfo, color) {
         console.log(color);
         document.body.style.background = color;
-        transact_info.triggerCallback('success', 'background change to ' + color);
+        transactInfo.triggerCallback('success', 'background change to ' + color);
     });
 
     ///////////////////////////////////////////////////////////////////////////

@@ -20,9 +20,9 @@ class ServerProxy {
     }
 
     @JavascriptInterface
-    public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
-        Log.e("ServerProxy#onTransact", invokeInfoMarshalling + "/" + paramMarshalling);
-        TransactInfo transactInfo = TransactInfo.parse(invokeInfoMarshalling);
+    public void onTransact(String transactInfoMarshalling, String paramMarshalling) {
+        Log.e("ServerProxy#onTransact", transactInfoMarshalling + "/" + paramMarshalling);
+        TransactInfo transactInfo = TransactInfo.parse(transactInfoMarshalling);
         if (transactInfo.isCallback()) {
             dispatchCallbackInvoke(transactInfo, paramMarshalling);
         } else {
