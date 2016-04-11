@@ -37,7 +37,7 @@ public class ServerProxy {
     }
 
     public void register(TransactHandler transactHandler) {
-        handlers.put(transactHandler.getServerMethodName(), transactHandler);
+        handlers.put(transactHandler.getHandlerName(), transactHandler);
     }
 
     /**

@@ -13,7 +13,7 @@ public class SimpleTransactHandler implements TransactHandler {
     }
 
     @Override
-    public String getServerMethodName() {
+    public String getHandlerName() {
         return name;
     }
 

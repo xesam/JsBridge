@@ -26,7 +26,7 @@ public class UserHandler implements TransactHandler {
     }
 
     @Override
-    public String getServerMethodName() {
+    public String getHandlerName() {
         return "getUser";
     }
 

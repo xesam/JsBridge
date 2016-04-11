@@ -11,6 +11,6 @@ public class TransactDispatcher {
     private Map<String, TransactHandler> handlers = new HashMap<>();
 
     public void register(TransactHandler transactHandler) {
-        handlers.put(transactHandler.getServerMethodName(), transactHandler);
+        handlers.put(transactHandler.getHandlerName(), transactHandler);
     }
 }
