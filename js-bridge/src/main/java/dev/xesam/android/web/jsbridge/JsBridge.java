@@ -47,7 +47,7 @@ public final class JsBridge {
     }
 
     public void dispatchCallback(InvokeInfo invokeInfo, String paramMarshalling) {
-        mClientProxy.handleCallback(invokeInfo, paramMarshalling);
+        mClientProxy.dispatchCallback(invokeInfo, paramMarshalling);
     }
 
     public void transact(String script) {

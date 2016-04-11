@@ -30,12 +30,9 @@ public class ServerProxy {
         ServerRequest serverRequest = new ServerRequest(this, invokeInfoMarshalling, paramMarshalling);
         InvokeInfo invokeInfo = serverRequest.getInvokeInfo();
         if (invokeInfo.isCallback()) {
-            mJsBridge.dispatchCallback(invokeInfo, paramMarshalling);
+            dispatchCallbackInvoke(serverRequest);
         } else if (invokeInfo.isDirectInvoke()) {
-            TransactHandler transactHandler = handlers.get(invokeInfo.getInvokeName());
-            if (transactHandler != null) {
-                transactHandler.handle(serverRequest);
-            }
+            dispatchDirectInvoke(serverRequest);
         }
     }
 
@@ -43,7 +40,27 @@ public class ServerProxy {
         handlers.put(transactHandler.getServerMethodName(), transactHandler);
     }
 
-    void dispatchCallback(ServerRequest serverRequest, ClientRequest clientRequest) {
+    /**
+     * js -> java ： js 直接调用 java 方法
+     */
+    private void dispatchDirectInvoke(ServerRequest serverRequest) {
+        TransactHandler transactHandler = handlers.get(serverRequest.getInvokeInfo().getInvokeName());
+        if (transactHandler != null) {
+            transactHandler.handle(serverRequest);
+        }
+    }
+
+    /**
+     * js -> java ： js 回调 java 方法
+     */
+    private void dispatchCallbackInvoke(ServerRequest serverRequest) {
+        mJsBridge.dispatchCallback(serverRequest.getInvokeInfo(), serverRequest.getInvokeParam());
+    }
+
+    /**
+     * java -> js ： java 触发 js 回调
+     */
+    void triggerCallback(ClientRequest clientRequest) {
         mJsBridge.transact(clientRequest);
     }
 }

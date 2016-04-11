@@ -36,10 +36,13 @@ public class ClientProxy {
             callbacks.put(callbackId, request.getCallback());
             request.getInvokeInfo().setCallbackId(callbackId);
         }
-        mJsExecutor.transact(request.getInvokeInfo(), request.getParam());
+        mJsExecutor.transact(request.getInvokeInfo(), request.getInvokeParam());
     }
 
-    public void handleCallback(InvokeInfo invokeInfo, String paramMarshalling) {
+    /**
+     * js -> java ： 回调 java 方法
+     */
+    public void dispatchCallback(InvokeInfo invokeInfo, String paramMarshalling) {
         if (callbacks.containsKey(invokeInfo.getInvokeId())) {
             Callback callback = callbacks.get(invokeInfo.getInvokeId());
             callback.onReceiveResult(invokeInfo.getInvokeName(), paramMarshalling);

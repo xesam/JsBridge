@@ -12,25 +12,28 @@ public class ServerRequest {
     private ServerProxy mServerProxy;
 
     private InvokeInfo mInvokeInfo;
-    private String serverMethodParams;
+    private String invokeParam;
 
-    public ServerRequest(ServerProxy serverProxy, String invokeInfoMarshalling, String paramMarshalling) {
+    ServerRequest(ServerProxy serverProxy, String invokeInfoMarshalling, String paramMarshalling) {
         this.mServerProxy = serverProxy;
         mInvokeInfo = InvokeInfo.parse(invokeInfoMarshalling);
-        serverMethodParams = paramMarshalling;
+        invokeParam = paramMarshalling;
     }
 
     public InvokeInfo getInvokeInfo() {
         return mInvokeInfo;
     }
 
-    public String getServerParams() {
-        return serverMethodParams;
+    public String getInvokeParam() {
+        return invokeParam;
     }
 
-    public void triggerCallback(String callbackMethodName, Marshallable marshallable) {
-        InvokeInfo invokeInfo = InvokeInfo.createServerCallback(mInvokeInfo, callbackMethodName);
-        ClientRequest request = new ClientRequest(invokeInfo, marshallable);
-        mServerProxy.dispatchCallback(this, request);
+    /**
+     * java -> js ： 触发 js 回调
+     */
+    public void triggerCallback(String callbackName, Marshallable callbackParam) {
+        InvokeInfo invokeInfo = InvokeInfo.createCallbackInvoke(mInvokeInfo, callbackName);
+        ClientRequest request = new ClientRequest(invokeInfo, callbackParam);
+        mServerProxy.triggerCallback(request);
     }
 }

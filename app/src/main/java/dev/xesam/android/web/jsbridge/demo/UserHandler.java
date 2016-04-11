@@ -36,7 +36,7 @@ public class UserHandler implements TransactHandler {
             @Override
             public void run() {
                 User user = getUser();
-                String serverParams = serverRequest.getServerParams();
+                String serverParams = serverRequest.getInvokeParam();
                 Map<String, String> map = new Gson().fromJson(serverParams, Map.class);
                 String prefix = map.get("name_prefix");
                 Toast.makeText(mContext, "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();

@@ -43,17 +43,19 @@
         },
 
         invoke: function (invoke_param) {
-            var targetFn = null;
             if (this.isCallback()) {
                 var callback = window.JsExecutor._callbacks[this.invoke_id];
                 if (callback) { //找到了回调
-                    targetFn = callback[this.invoke_name];
+                    var targetFn = callback[this.invoke_name];
+                    if (targetFn) {
+                        targetFn(invoke_param);
+                    }
                 }
             } else {
-                targetFn = window.JsExecutor._handlers[this.invoke_name] || window[this.invoke_name];
-            }
-            if (targetFn) {
-                targetFn(this, invoke_param);
+                var targetFn = window.JsExecutor._handlers[this.invoke_name] || window[this.invoke_name];
+                if (targetFn) {
+                    targetFn(this, invoke_param);
+                }
             }
         },
 
@@ -69,22 +71,22 @@
 
     window.JsExecutor = {
         _callbacks: {},
+
         client_transact_2: function (raw_invoke_info, callback_param) {//callback
             window.invoker(raw_invoke_info, callback_param);
         },
 
-
-        client_transact: function (server_method_name, server_method_params, client_callback) {
-            console.log(server_method_name, server_method_params, client_callback);
+        client_transact: function (invoke_name, invoke_param, client_callback) {
+            console.log(invoke_name, invoke_param, client_callback);
             var invoke_info = {
-                "_server_method_name": server_method_name
+                "_invoke_name": invoke_name
             };
             if (client_callback) {
                 var callback_id = new Date().getTime();
                 this._callbacks[callback_id] = client_callback;
-                invoke_info['_client_callback'] = callback_id;
+                invoke_info['_callback_id'] = callback_id;
             }
-            window.invoker(invoke_info, server_method_params);
+            window.invoker(new InvokeInfo(invoke_info), invoke_param);
         },
 
         _handlers: {},
@@ -93,7 +95,7 @@
         },
 
         server_onTransact: function (raw_invoke_info, invoke_param) {
-            console.log('server_onTransact:' + raw_invoke_info + "###" + invoke_param);
+            console.log('server_onTransact:' + JSON.stringify(raw_invoke_info) + "###" + JSON.stringify(invoke_param));
 
             if (!raw_invoke_info) {
                 return;
@@ -113,8 +115,8 @@
             JavaExecutor.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };
     }
-    ///////////////////////////////////////////////////////////////////////////
 
+    ///////////////////////////////////////////////////////////////////////////
     var sdk = {
         showPackageName: function (params) {
             var _server_method_name = 'showPackageName';
@@ -128,9 +130,8 @@
             window.JsExecutor.client_transact(_server_method_name, _server_method_params, _client_callback);
         }
     };
-    ///////////////////////////////////////////////////////////////////////////
 
-    //local
+    ///////////////////////////////////////////////////////////////////////////
     function js_fn_1() {
         document.body.style.background = 'red';
     }
@@ -140,8 +141,8 @@
         document.body.style.background = color;
         invoke_info.triggerCallback('success', 'background change to ' + color);
     });
+
     ///////////////////////////////////////////////////////////////////////////
-    //client
     function _$(id, fn) {
         var dom = document.getElementById(id);
         dom.addEventListener('click', fn, false);

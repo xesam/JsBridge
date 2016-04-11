@@ -9,7 +9,7 @@ import dev.xesam.android.web.jsbridge.Marshallable;
 public class ClientRequest {
 
     private InvokeInfo mInvokeInfo;
-    private Marshallable mParam;
+    private Marshallable mInvokeParam;
     private Callback<?> mCallback;
 
     public ClientRequest(InvokeInfo invokeInfo) {
@@ -18,12 +18,12 @@ public class ClientRequest {
 
     public ClientRequest(InvokeInfo invokeInfo, Marshallable param) {
         mInvokeInfo = invokeInfo;
-        mParam = param;
+        mInvokeParam = param;
     }
 
     public ClientRequest(InvokeInfo invokeInfo, Marshallable param, Callback<?> callback) {
         mInvokeInfo = invokeInfo;
-        mParam = param;
+        mInvokeParam = param;
         mCallback = callback;
     }
 
@@ -31,8 +31,8 @@ public class ClientRequest {
         return mInvokeInfo;
     }
 
-    public Marshallable getParam() {
-        return mParam;
+    public Marshallable getInvokeParam() {
+        return mInvokeParam;
     }
 
     public Callback<?> getCallback() {
