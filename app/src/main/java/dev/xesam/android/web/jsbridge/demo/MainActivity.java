@@ -11,9 +11,9 @@ import android.widget.Toast;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.MarshallableString;
-import dev.xesam.android.web.jsbridge.SimpleTransactHandler;
+import dev.xesam.android.web.jsbridge.server.SimpleServerHandler;
 import dev.xesam.android.web.jsbridge.client.ClientCallback;
-import dev.xesam.android.web.jsbridge.server.ServerRequest;
+import dev.xesam.android.web.jsbridge.server.ServerCallback;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
         vBtn1 = (Button) findViewById(R.id.invoke_js_without_callback);
         vBtn2 = (Button) findViewById(R.id.invoke_js_with_callback);
         final JsBridge jsBridge = new JsBridge(vWebView);
-        jsBridge.register(new SimpleTransactHandler("showPackageName") {
+        jsBridge.register(new SimpleServerHandler("showPackageName") {
             @Override
-            public void handle(ServerRequest serverRequest) {
+            public void handle(String param, ServerCallback serverCallback) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {

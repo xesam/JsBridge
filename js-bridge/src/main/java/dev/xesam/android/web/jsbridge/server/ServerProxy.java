@@ -8,8 +8,6 @@ import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.InvokeInfo;
 import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.TransactHandler;
-import dev.xesam.android.web.jsbridge.client.ClientRequest;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
@@ -18,7 +16,7 @@ public class ServerProxy {
     public static final String JAVA_BRIDGE = "JavaExecutor";
 
     private JsBridge mJsBridge;
-    private Map<String, TransactHandler> handlers = new HashMap<>();
+    private Map<String, ServerHandler> handlers = new HashMap<>();
 
     public ServerProxy(JsBridge mJsBridge) {
         this.mJsBridge = mJsBridge;
@@ -27,40 +25,33 @@ public class ServerProxy {
     @JavascriptInterface
     public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
         Log.e("ServerProxy#onTransact", invokeInfoMarshalling + "/" + paramMarshalling);
-        ServerRequest serverRequest = new ServerRequest(this, invokeInfoMarshalling, paramMarshalling);
-        InvokeInfo invokeInfo = serverRequest.getInvokeInfo();
+        InvokeInfo invokeInfo = InvokeInfo.parse(invokeInfoMarshalling);
         if (invokeInfo.isCallback()) {
-            dispatchCallbackInvoke(serverRequest);
+            dispatchCallbackInvoke(invokeInfo, paramMarshalling);
         } else if (invokeInfo.isDirectInvoke()) {
-            dispatchDirectInvoke(serverRequest);
+            dispatchDirectInvoke(invokeInfo, paramMarshalling);
         }
     }
 
-    public void register(TransactHandler transactHandler) {
-        handlers.put(transactHandler.getHandlerName(), transactHandler);
+    public void register(ServerHandler serverHandler) {
+        handlers.put(serverHandler.getHandlerName(), serverHandler);
     }
 
     /**
      * js -> java ： js 直接调用 java 方法
      */
-    private void dispatchDirectInvoke(ServerRequest serverRequest) {
-        TransactHandler transactHandler = handlers.get(serverRequest.getInvokeInfo().getInvokeName());
-        if (transactHandler != null) {
-            transactHandler.handle(serverRequest);
+    private void dispatchDirectInvoke(InvokeInfo invokeInfo, String paramMarshalling) {
+        ServerHandler serverHandler = handlers.get(invokeInfo.getInvokeName());
+        if (serverHandler != null) {
+            ServerCallback serverCallback = new ServerCallback(mJsBridge, invokeInfo.getCallbackId());
+            serverHandler.handle(paramMarshalling, serverCallback);
         }
     }
 
     /**
      * js -> java ： js 回调 java 方法
      */
-    private void dispatchCallbackInvoke(ServerRequest serverRequest) {
-        mJsBridge.dispatchClientCallback(serverRequest.getInvokeInfo(), serverRequest.getInvokeParam());
-    }
-
-    /**
-     * java -> js ： java 触发 js 回调
-     */
-    void triggerCallback(ClientRequest clientRequest) {
-        mJsBridge.transact(clientRequest);
+    private void dispatchCallbackInvoke(InvokeInfo invokeInfo, String paramMarshalling) {
+        mJsBridge.dispatchClientCallback(invokeInfo, paramMarshalling);
     }
 }

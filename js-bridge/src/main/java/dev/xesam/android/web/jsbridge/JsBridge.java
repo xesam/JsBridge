@@ -6,6 +6,7 @@ import android.webkit.WebView;
 import dev.xesam.android.web.jsbridge.client.ClientCallback;
 import dev.xesam.android.web.jsbridge.client.ClientProxy;
 import dev.xesam.android.web.jsbridge.client.ClientRequest;
+import dev.xesam.android.web.jsbridge.server.ServerHandler;
 import dev.xesam.android.web.jsbridge.server.ServerProxy;
 
 /**
@@ -36,8 +37,8 @@ public final class JsBridge {
         webView.addJavascriptInterface(mServerProxy, ServerProxy.JAVA_BRIDGE);
     }
 
-    public void register(TransactHandler transactHandler) {
-        mServerProxy.register(transactHandler);
+    public void register(ServerHandler serverHandler) {
+        mServerProxy.register(serverHandler);
     }
 
     public void invoke(String method, Marshallable param, ClientCallback clientCallback) {

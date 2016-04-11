@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.MarshallableObject;
-import dev.xesam.android.web.jsbridge.TransactHandler;
-import dev.xesam.android.web.jsbridge.server.ServerRequest;
+import dev.xesam.android.web.jsbridge.server.ServerHandler;
+import dev.xesam.android.web.jsbridge.server.ServerCallback;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-public class UserHandler implements TransactHandler {
+public class UserHandler implements ServerHandler {
 
     private Context mContext;
 
@@ -31,23 +31,22 @@ public class UserHandler implements TransactHandler {
     }
 
     @Override
-    public void handle(final ServerRequest serverRequest) {
+    public void handle(final String param, final ServerCallback serverCallback) {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 User user = getUser();
-                String serverParams = serverRequest.getInvokeParam();
-                Map<String, String> map = new Gson().fromJson(serverParams, Map.class);
+                Map<String, String> map = new Gson().fromJson(param, Map.class);
                 String prefix = map.get("name_prefix");
                 Toast.makeText(mContext, "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
                 if ("standard_error".equals(prefix)) {
                     Map<String, String> map1 = new HashMap<>();
                     map1.put("error", "这里是错误消息");
                     String userMarshalling = new Gson().toJson(map1);
-                    serverRequest.triggerCallback("fail", new MarshallableObject(userMarshalling));
+                    serverCallback.invoke("fail", new MarshallableObject(userMarshalling));
                 } else {
                     String userMarshalling = new Gson().toJson(user);
-                    serverRequest.triggerCallback("success", new MarshallableObject(userMarshalling));
+                    serverCallback.invoke("success", new MarshallableObject(userMarshalling));
                 }
             }
         });
