@@ -11,7 +11,7 @@ import java.util.Locale;
  */
 class JsExecutor {
 
-    public static final String JS_EXECUTOR = "window.JsExecutor";
+    public static final String JS_EXECUTOR_ON_TRANSACT = "window.JavaBridge.serverOnTransact";
 
     private JsBridge mJsBridge;
 
@@ -22,9 +22,9 @@ class JsExecutor {
     public void transact(TransactInfo transactInfo, Marshallable param) {
         String script;
         if (param == null) {
-            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s)", JS_EXECUTOR, transactInfo.toMarshalling());
+            script = String.format(Locale.getDefault(), "%s(%s)", JS_EXECUTOR_ON_TRANSACT, transactInfo.toMarshalling());
         } else {
-            script = String.format(Locale.getDefault(), "%s.server_onTransact(%s, %s)", JS_EXECUTOR, transactInfo.toMarshalling(), param.toMarshalling());
+            script = String.format(Locale.getDefault(), "%s(%s, %s)", JS_EXECUTOR_ON_TRANSACT, transactInfo.toMarshalling(), param.toMarshalling());
         }
 
         transact(script);

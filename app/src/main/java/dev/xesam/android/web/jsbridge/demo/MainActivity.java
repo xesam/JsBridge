@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         vBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jsBridge.invoke("js_fn_1", new MarshallableString("yellow"), new ClientCallback<String>() {
+                jsBridge.invoke("jsFn1", new MarshallableString("yellow"), new ClientCallback<String>() {
                     @Override
                     public void onReceiveResult(String invokeName, String invokeParam) {
                         if ("success".equals(invokeName)) {
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         vBtn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                jsBridge.eval("window.js_fn_1()");
+                jsBridge.eval("window.jsFn1()");
             }
         });
     }
