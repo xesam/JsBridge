@@ -34,8 +34,15 @@ public class ClientProxy {
         if (request.getCallback() != null) {
             final long callbackId = SystemClock.elapsedRealtime();
             callbacks.put(callbackId, request.getCallback());
-            request.getInvokeInfo().setClientCallbackId(callbackId);
+            request.getInvokeInfo().setCallbackId(callbackId);
         }
         mJsExecutor.transact(request.getInvokeInfo(), request.getParam());
+    }
+
+    public void handleCallback(InvokeInfo invokeInfo, String paramMarshalling) {
+        if (callbacks.containsKey(invokeInfo.getInvokeId())) {
+            Callback callback = callbacks.get(invokeInfo.getInvokeId());
+            callback.onReceiveResult(invokeInfo.getInvokeName(), paramMarshalling);
+        }
     }
 }

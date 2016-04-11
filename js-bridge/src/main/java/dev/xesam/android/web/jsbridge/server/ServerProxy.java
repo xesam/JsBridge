@@ -1,5 +1,6 @@
 package dev.xesam.android.web.jsbridge.server;
 
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import java.util.HashMap;
@@ -25,12 +26,13 @@ public class ServerProxy {
 
     @JavascriptInterface
     public void onTransact(String invokeInfoMarshalling, String paramMarshalling) {
+        Log.e("ServerProxy#onTransact", invokeInfoMarshalling + "/" + paramMarshalling);
         ServerRequest serverRequest = new ServerRequest(this, invokeInfoMarshalling, paramMarshalling);
         InvokeInfo invokeInfo = serverRequest.getInvokeInfo();
         if (invokeInfo.isCallback()) {
-
+            mJsBridge.dispatchCallback(invokeInfo, paramMarshalling);
         } else if (invokeInfo.isDirectInvoke()) {
-            TransactHandler transactHandler = handlers.get(invokeInfo.getServerMethodName());
+            TransactHandler transactHandler = handlers.get(invokeInfo.getInvokeName());
             if (transactHandler != null) {
                 transactHandler.handle(serverRequest);
             }

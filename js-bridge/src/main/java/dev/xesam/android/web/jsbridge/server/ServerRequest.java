@@ -16,7 +16,7 @@ public class ServerRequest {
 
     public ServerRequest(ServerProxy serverProxy, String invokeInfoMarshalling, String paramMarshalling) {
         this.mServerProxy = serverProxy;
-        mInvokeInfo = InvokeInfo.createFromMarshalling(invokeInfoMarshalling);
+        mInvokeInfo = InvokeInfo.parse(invokeInfoMarshalling);
         serverMethodParams = paramMarshalling;
     }
 

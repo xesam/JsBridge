@@ -49,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 jsBridge.invoke("js_fn_1", new MarshallableString("yellow"), new Callback<String>() {
                     @Override
-                    public void onReceiveResult(String result) {
-                        Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                    public void onReceiveResult(String invokeName, String result) {
+                        if ("success".equals(invokeName)) {
+                            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }

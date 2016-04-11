@@ -20,32 +20,60 @@
 <script>
 
     function InvokeInfo(invoke_info) {
-        this.server_method_id = invoke_info['_server_method_id'];
-        this.server_method_name = invoke_info['_server_method_name'];
+        this.invoke_id = invoke_info['_invoke_id'];
+        this.invoke_name = invoke_info['_invoke_name'];
 
-        this.invoke = function (server_method_params) {
+        this.callback_id = invoke_info['_callback_id'];
+        this.callback_name = invoke_info['_callback_name'];
+    }
+
+    InvokeInfo.prototype = {
+
+        toJSON: function () {
+            return {
+                "_invoke_id": this.invoke_id,
+                "_invoke_name": this.invoke_name,
+                "_callback_id": this.callback_id,
+                "_callback_name": this.callback_name,
+            }
+        },
+
+        isCallback: function () {
+            return this.invoke_id && this.invoke_id > 0;
+        },
+
+        invoke: function (invoke_param) {
             var targetFn = null;
-
-            if (this.server_method_id && this.server_method_id > 0) {//有 id 表示是回调
-                var callback = window.JsExecutor._callbacks[server_method_id];
+            if (this.isCallback()) {
+                var callback = window.JsExecutor._callbacks[this.invoke_id];
                 if (callback) { //找到了回调
-                    targetFn = callback[server_method_name];
+                    targetFn = callback[this.invoke_name];
                 }
-            } else if (this.server_method_name) { //没有 id ，表示是要直接调用某个方法
-                targetFn = window.JsExecutor._handlers[this.server_method_name] || window[this.server_method_name];
+            } else {
+                targetFn = window.JsExecutor._handlers[this.invoke_name] || window[this.invoke_name];
             }
             if (targetFn) {
-                targetFn(this, server_method_params);
+                targetFn(this, invoke_param);
             }
-        };
+        },
 
-        this.triggerCallback = function (callbackMethodName, result) {
-//            window.JsExecutor.client_transact();
-        };
-    }
+        triggerCallback: function (callback_name, callback_param) {
+            var invoke_info = new InvokeInfo({
+                "_invoke_id": this.callback_id,
+                "_invoke_name": callback_name
+            });
+            console.log(callback_name);
+            window.JsExecutor.client_transact_2(invoke_info, callback_param);
+        }
+    };
 
     window.JsExecutor = {
         _callbacks: {},
+        client_transact_2: function (raw_invoke_info, callback_param) {//callback
+            window.invoker(raw_invoke_info, callback_param);
+        },
+
+
         client_transact: function (server_method_name, server_method_params, client_callback) {
             console.log(server_method_name, server_method_params, client_callback);
             var invoke_info = {
@@ -58,19 +86,21 @@
             }
             window.invoker(invoke_info, server_method_params);
         },
+
         _handlers: {},
         server_register: function (server_method_name, transact_handler) {
             this._handlers[server_method_name] = transact_handler;
         },
-        server_onTransact: function (server_invoke_info, server_method_params) {
-            console.log('server_onTransact:' + server_invoke_info + "###" + server_method_params);
 
-            if (!server_invoke_info) {
+        server_onTransact: function (raw_invoke_info, invoke_param) {
+            console.log('server_onTransact:' + raw_invoke_info + "###" + invoke_param);
+
+            if (!raw_invoke_info) {
                 return;
             }
 
-            var invoke_info = new InvokeInfo(server_invoke_info);
-            invoke_info.invoke(server_method_params);
+            var invoke_info = new InvokeInfo(raw_invoke_info);
+            invoke_info.invoke(invoke_param);
         }
     };
 
@@ -83,6 +113,7 @@
             JavaExecutor.onTransact(JSON.stringify(invoke_info), JSON.stringify(server_method_params));
         };
     }
+    ///////////////////////////////////////////////////////////////////////////
 
     var sdk = {
         showPackageName: function (params) {
@@ -97,6 +128,7 @@
             window.JsExecutor.client_transact(_server_method_name, _server_method_params, _client_callback);
         }
     };
+    ///////////////////////////////////////////////////////////////////////////
 
     //local
     function js_fn_1() {
@@ -108,7 +140,7 @@
         document.body.style.background = color;
         invoke_info.triggerCallback('success', 'background change to ' + color);
     });
-
+    ///////////////////////////////////////////////////////////////////////////
     //client
     function _$(id, fn) {
         var dom = document.getElementById(id);

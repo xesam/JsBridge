@@ -9,45 +9,41 @@ import org.json.JSONObject;
  * Created by xesamguo@gmail.com on 16-4-8.
  */
 public class InvokeInfo implements Marshallable {
-    public static final long INVALID_CALLBACK = 0;
+    public static final long INVALID_INVOKE_ID = 0;
+    public static final long INVALID_CALLBACK_ID = 0;
 
-    public static final String _SERVER_METHOD_ID = "_server_method_id";
-    public static final String _SERVER_METHOD_NAME = "_server_method_name";
-    public static final String _CLIENT_CALLBACK_ID = "_client_callback";
+    public static final String _INVOKE_ID = "_invoke_id";
+    public static final String _INVOKE_NAME = "_invoke_name";
 
-    private long mServerMethodId = INVALID_CALLBACK;
-    private String mServerMethodName;
-    private long mClientCallbackId = INVALID_CALLBACK;
+    public static final String _CALLBACK_ID = "_callback_id";
+    public static final String _CALLBACK_NAME = "_callback_name";
+
+    private long mInvokeId = INVALID_INVOKE_ID;
+    private String mInvokeName = null;
+
+    private long mCallbackId = INVALID_CALLBACK_ID;
+    private String mCallbackName = null;
 
     /**
      * 直接调用 js
      */
-    public static InvokeInfo createServerInvoke(String serverMethodName) {
+    public static InvokeInfo createDirectInvoke(String invokeName) {
         InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mServerMethodName = serverMethodName;
-        return invokeInfo;
-    }
-
-    /**
-     * 去回调 js
-     */
-    public static InvokeInfo createServerCallback(String callbackMethodName) {
-        InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mServerMethodName = callbackMethodName;
+        invokeInfo.mInvokeName = invokeName;
         return invokeInfo;
     }
 
     /**
      * 回调 js
      */
-    public static InvokeInfo createServerCallback(InvokeInfo serverInvokeInfo, String callbackMethodName) {
+    public static InvokeInfo createServerCallback(InvokeInfo directInvoke, String callbackName) {
         InvokeInfo invokeInfo = new InvokeInfo();
-        invokeInfo.mServerMethodId = serverInvokeInfo.mClientCallbackId;
-        invokeInfo.mServerMethodName = callbackMethodName;
+        invokeInfo.mInvokeId = directInvoke.mCallbackId;
+        invokeInfo.mInvokeName = callbackName;
         return invokeInfo;
     }
 
-    public static InvokeInfo createFromMarshalling(String marshalling) {
+    public static InvokeInfo parse(String marshalling) {
         InvokeInfo invokeInfo = new InvokeInfo();
         invokeInfo.unmarshalling(marshalling);
         return invokeInfo;
@@ -59,14 +55,17 @@ public class InvokeInfo implements Marshallable {
     private void unmarshalling(String marshalling) {
         try {
             JSONObject jsonObject = new JSONObject(marshalling);
-            if (jsonObject.has(_SERVER_METHOD_ID)) {
-                mServerMethodId = jsonObject.getLong(_SERVER_METHOD_ID);
+            if (jsonObject.has(_INVOKE_ID)) {
+                mInvokeId = jsonObject.getLong(_INVOKE_ID);
             }
-            if (jsonObject.has(_SERVER_METHOD_NAME)) {
-                mServerMethodName = jsonObject.getString(_SERVER_METHOD_NAME);
+            if (jsonObject.has(_INVOKE_NAME)) {
+                mInvokeName = jsonObject.getString(_INVOKE_NAME);
             }
-            if (jsonObject.has(_CLIENT_CALLBACK_ID)) {
-                mClientCallbackId = jsonObject.getLong(_CLIENT_CALLBACK_ID);
+            if (jsonObject.has(_CALLBACK_ID)) {
+                mCallbackId = jsonObject.getLong(_CALLBACK_ID);
+            }
+            if (jsonObject.has(_CALLBACK_NAME)) {
+                mCallbackName = jsonObject.getString(_CALLBACK_NAME);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -77,9 +76,10 @@ public class InvokeInfo implements Marshallable {
     public String toMarshalling() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(_SERVER_METHOD_ID, mServerMethodId);
-            jsonObject.put(_SERVER_METHOD_NAME, mServerMethodName);
-            jsonObject.put(_CLIENT_CALLBACK_ID, mClientCallbackId);
+            jsonObject.put(_INVOKE_ID, mInvokeId);
+            jsonObject.put(_INVOKE_NAME, mInvokeName);
+            jsonObject.put(_CALLBACK_ID, mCallbackId);
+            jsonObject.put(_CALLBACK_NAME, mCallbackName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -87,26 +87,22 @@ public class InvokeInfo implements Marshallable {
     }
 
     public boolean isCallback() {
-        return mServerMethodId > 0;
+        return mInvokeId > INVALID_INVOKE_ID;
     }
 
     public boolean isDirectInvoke() {
-        return !TextUtils.isEmpty(mServerMethodName);
+        return !TextUtils.isEmpty(mInvokeName);
     }
 
-    public long getServerMethodId() {
-        return mServerMethodId;
+    public long getInvokeId() {
+        return mInvokeId;
     }
 
-    public String getServerMethodName() {
-        return mServerMethodName;
+    public String getInvokeName() {
+        return mInvokeName;
     }
 
-    public long getClientCallbackId() {
-        return mClientCallbackId;
-    }
-
-    public void setClientCallbackId(long mClientCallbackId) {
-        this.mClientCallbackId = mClientCallbackId;
+    public void setCallbackId(long mClientCallbackId) {
+        this.mCallbackId = mClientCallbackId;
     }
 }
