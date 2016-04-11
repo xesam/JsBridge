@@ -46,7 +46,7 @@ public final class JsBridge {
      * invoke js_server method
      */
     public void invoke(String invokeMethod) {
-        invoke(invokeMethod, null);
+        invoke(invokeMethod, null, null);
     }
 
     /**
@@ -54,6 +54,13 @@ public final class JsBridge {
      */
     public void invoke(String invokeMethod, Marshallable param) {
         invoke(invokeMethod, param, null);
+    }
+
+    /**
+     * invoke js_server method
+     */
+    public void invoke(String invokeMethod, ClientCallback clientCallback) {
+        invoke(invokeMethod, null, clientCallback);
     }
 
     /**
