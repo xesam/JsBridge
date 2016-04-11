@@ -28,7 +28,7 @@ public class ServerProxy {
         InvokeInfo invokeInfo = InvokeInfo.parse(invokeInfoMarshalling);
         if (invokeInfo.isCallback()) {
             dispatchCallbackInvoke(invokeInfo, paramMarshalling);
-        } else if (invokeInfo.isDirectInvoke()) {
+        } else {
             dispatchDirectInvoke(invokeInfo, paramMarshalling);
         }
     }

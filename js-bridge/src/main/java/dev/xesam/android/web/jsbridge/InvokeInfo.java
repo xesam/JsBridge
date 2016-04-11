@@ -1,7 +1,5 @@
 package dev.xesam.android.web.jsbridge;
 
-import android.text.TextUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,10 +87,6 @@ public class InvokeInfo implements Marshallable {
 
     public boolean isCallback() {
         return mInvokeId > INVALID_INVOKE_ID;
-    }
-
-    public boolean isDirectInvoke() {
-        return !TextUtils.isEmpty(mInvokeName);
     }
 
     public long getInvokeId() {
