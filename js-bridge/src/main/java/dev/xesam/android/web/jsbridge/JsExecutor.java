@@ -1,14 +1,10 @@
-package dev.xesam.android.web.jsbridge.client;
+package dev.xesam.android.web.jsbridge;
 
 import android.os.Build;
 import android.util.Log;
 import android.webkit.ValueCallback;
 
 import java.util.Locale;
-
-import dev.xesam.android.web.jsbridge.TransactInfo;
-import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.Marshallable;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-8.

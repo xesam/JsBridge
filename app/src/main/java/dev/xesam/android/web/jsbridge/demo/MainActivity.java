@@ -11,9 +11,9 @@ import android.widget.Toast;
 
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.MarshallableString;
-import dev.xesam.android.web.jsbridge.server.SimpleServerHandler;
-import dev.xesam.android.web.jsbridge.client.ClientCallback;
-import dev.xesam.android.web.jsbridge.server.ServerCallback;
+import dev.xesam.android.web.jsbridge.SimpleServerHandler;
+import dev.xesam.android.web.jsbridge.ClientCallback;
+import dev.xesam.android.web.jsbridge.ServerCallback;
 
 public class MainActivity extends AppCompatActivity {
 

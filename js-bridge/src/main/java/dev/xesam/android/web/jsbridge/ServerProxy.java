@@ -1,4 +1,4 @@
-package dev.xesam.android.web.jsbridge.server;
+package dev.xesam.android.web.jsbridge;
 
 import android.util.Log;
 import android.webkit.JavascriptInterface;
@@ -6,13 +6,10 @@ import android.webkit.JavascriptInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.xesam.android.web.jsbridge.TransactInfo;
-import dev.xesam.android.web.jsbridge.JsBridge;
-
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
-public class ServerProxy {
+class ServerProxy {
     public static final String JAVA_BRIDGE = "JavaExecutor";
 
     private JsBridge mJsBridge;

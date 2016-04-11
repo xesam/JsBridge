@@ -1,18 +1,14 @@
-package dev.xesam.android.web.jsbridge.client;
+package dev.xesam.android.web.jsbridge;
 
 import android.os.SystemClock;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import dev.xesam.android.web.jsbridge.TransactInfo;
-import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.Marshallable;
-
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
-public class ClientProxy {
+class ClientProxy {
 
     private Map<Long, ClientCallback<?>> callbacks = new HashMap<>();
     private JsBridge mJsBridge;

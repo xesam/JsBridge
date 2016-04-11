@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * not include param
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-public class TransactInfo implements Marshallable {
+class TransactInfo implements Marshallable {
     public static final long INVALID_INVOKE_ID = 0;
     public static final long INVALID_CALLBACK_ID = 0;
 

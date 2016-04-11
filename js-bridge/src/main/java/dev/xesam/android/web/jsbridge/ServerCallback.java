@@ -1,11 +1,7 @@
-package dev.xesam.android.web.jsbridge.server;
-
-import dev.xesam.android.web.jsbridge.TransactInfo;
-import dev.xesam.android.web.jsbridge.JsBridge;
-import dev.xesam.android.web.jsbridge.Marshallable;
+package dev.xesam.android.web.jsbridge;
 
 /**
- * java callback
+ * callback registered in js
  * <p/>
  * Created by xesamguo@gmail.com on 16-4-11.
  */

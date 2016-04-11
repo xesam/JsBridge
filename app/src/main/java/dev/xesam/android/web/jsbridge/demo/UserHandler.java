@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.MarshallableObject;
-import dev.xesam.android.web.jsbridge.server.ServerHandler;
-import dev.xesam.android.web.jsbridge.server.ServerCallback;
+import dev.xesam.android.web.jsbridge.ServerHandler;
+import dev.xesam.android.web.jsbridge.ServerCallback;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-8.

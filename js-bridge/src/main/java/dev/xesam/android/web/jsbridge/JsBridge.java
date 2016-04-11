@@ -3,11 +3,6 @@ package dev.xesam.android.web.jsbridge;
 import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
-import dev.xesam.android.web.jsbridge.client.ClientCallback;
-import dev.xesam.android.web.jsbridge.client.ClientProxy;
-import dev.xesam.android.web.jsbridge.server.ServerHandler;
-import dev.xesam.android.web.jsbridge.server.ServerProxy;
-
 /**
  * Created by xesamguo@gmail.com on 16-4-7.
  */
@@ -72,14 +67,14 @@ public final class JsBridge {
     /**
      * dispatch java_client callback
      */
-    public void dispatchClientCallback(TransactInfo transactInfo, String paramMarshalling) {
+    void dispatchClientCallback(TransactInfo transactInfo, String paramMarshalling) {
         mClientProxy.dispatchClientCallback(transactInfo, paramMarshalling);
     }
 
     /**
      * dispatch java_server callback
      */
-    public void dispatchServerCallback(TransactInfo transactInfo, Marshallable invokeParam) {
+    void dispatchServerCallback(TransactInfo transactInfo, Marshallable invokeParam) {
         mClientProxy.transact(transactInfo, invokeParam, null);
     }
 }
