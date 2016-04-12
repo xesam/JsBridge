@@ -17,6 +17,14 @@
             overflow: scroll;
         }
 
+        #control button {
+            line-height: 1.5em;
+            margin-top: 0.5em;
+            margin-left: 1em;
+            font-size: 1.2em;
+            padding: 2px;
+        }
+
         #panel {
             height: 50%;
             overflow: scroll;
@@ -92,24 +100,17 @@
     });
 
     _$('j_showPackageName', function (e) {
-        sdk.showPackageName({
-            "success": function (data) {
-                console.log('sdk.showPackageName,success', data);
-            },
-            "fail": function (error) {
-                console.log('sdk.showPackageName,fail', data);
-            }
-        })
+        sdk.showPackageName();
     });
 
     _$('j_getUser_succ', function (e) {
         sdk.getUser({
             "name_prefix": "standard_succ",
             "success": function (user) {
-                console.log('sdk.getUser,success:' + user.name);
+                log('sdk.getUser,success:' + user.name);
             },
             "fail": function (error) {
-                console.log('sdk.getUser,fail;' + data);
+                log('sdk.getUser,fail:' + error.msg);
             }
         })
     });
@@ -118,10 +119,10 @@
         sdk.getUser({
             "name_prefix": "standard_error",
             "success": function (user) {
-                console.log('sdk.getUser,success:' + user.name);
+                log('sdk.getUser,success:' + user.name);
             },
             "fail": function (error) {
-                console.log('sdk.getUser,fail;' + error.error);
+                log('sdk.getUser,fail:' + error.msg);
             }
         })
     });

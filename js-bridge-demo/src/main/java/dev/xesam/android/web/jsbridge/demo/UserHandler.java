@@ -41,7 +41,7 @@ public class UserHandler implements ServerHandler {
                 Toast.makeText(mContext, "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
                 if ("standard_error".equals(prefix)) {
                     Map<String, String> map1 = new HashMap<>();
-                    map1.put("error", "这里是错误消息");
+                    map1.put("msg", "get user failed");
                     String userMarshalling = new Gson().toJson(map1);
                     serverCallback.invoke("fail", new MarshallableObject(userMarshalling));
                 } else {
