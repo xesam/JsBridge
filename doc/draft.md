@@ -4,8 +4,9 @@
 
 Android JsBridge 就是用来在 Android app的原生 java 代码与 javascript 代码中架设通信（调用）桥梁的辅助工具。 
 
+[使用方式戳这里](#anchor_usage)
 
-[使用方式戳这里](#uasge)
+整个工程还在完善过程中，有问题请联系 [xesam](http://xesam.github.io/about/)
 
 ## 原理概述
 
@@ -16,13 +17,13 @@ Javascript 运行在 WebView 中，而 WebView 只是 Javascript 执行引擎与
 
 首先回顾一一下基于 Binder 的经典 RPC 调用：
 
-![Javascript-bridge-rpc](./doc/js-bridge-rpc.png)
+![Javascript-bridge-rpc](./js-bridge-rpc.png)
 
 当然，client 与 server 只是用来区分通信双方责任的叫法而已，并不是一成不变的。
 对于 java 与 javascript 互调的情况，当 java 主动调用 javascript 的时候，java 充当 client 角色，javascript 则扮演 server 的角色，
 javascript 中的函数执行完毕后回调 java 方法，这个时候，javascript 充当 client 角色，而 javascript 则承担 server 的责任。
 
-![Javascript-bridge-circle](./doc/js-bridge-circle.png)
+![Javascript-bridge-circle](./js-bridge-circle.png)
 
 剩下的问题就是怎么来实现这个机制了，大致有这么几个需要解决的问题：
 
@@ -108,7 +109,7 @@ Android 的默认 Sdk 中， Java 与 Javascript 的一切交互都是依托于 
 
 如图：
 
-![Javascript-bridge-register](./doc/js-bridge-register.png)
+![Javascript-bridge-register](./js-bridge-register.png)
 
 ## 3. 方法参数以及回调如何处理
 
@@ -239,5 +240,132 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
 1. 回调函数需要及时删除，不然会引起内存泄漏。
 
 ## 使用
-<a name="usage"></a>
+<a name="anchor_usage"></a>
+
+### 必要配置
+
+请在对应的 html 页面中引入
+
+```html
+    <script src="js-bridge.js"></script>
+```
+
+### Java 环境
+
+初始化 JsBridge:
+
+```java
+    jsBridge = new JsBridge(vWebView);
+```
+
+Java 注册处理方法：
+
+```java
+    jsBridge.register(new SimpleServerHandler("showPackageName") {
+        @Override
+        public void handle(String param, ServerCallback serverCallback) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    String packageName = getPackageName();
+                    Tip.showTip(getApplicationContext(), "showPackageName:" + packageName);
+                }
+            });
+        }
+    });
+```
+
+Java 在处理方法中回调 Javascript：
+
+```java
+
+    @Override
+    public void handle(final String param, final ServerCallback serverCallback) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                User user = getUser();
+                Map<String, String> map = new Gson().fromJson(param, Map.class);
+                String prefix = map.get("name_prefix");
+                Tip.showTip(mContext, "user.getName():" + prefix + "/" + user.getName());
+                if ("standard_error".equals(prefix)) {
+                    Map<String, String> map1 = new HashMap<>();
+                    map1.put("msg", "get user failed");
+                    String userMarshalling = new Gson().toJson(map1);
+                    serverCallback.invoke("fail", new MarshallableObject(userMarshalling));
+                } else {
+                    String userMarshalling = new Gson().toJson(user);
+                    serverCallback.invoke("success", new MarshallableObject(userMarshalling));
+                }
+            }
+        });
+    }
+```
+
+Java 执行 Js 函数：
+
+```java
+
+    jsBridge.invoke("jsFn4", new MarshallableString("yellow"), new ClientCallback<String>() {
+        @Override
+        public void onReceiveResult(String invokeName, final String invokeParam) {
+            if ("success".equals(invokeName)) {
+
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Tip.showTip(getApplicationContext(), invokeParam);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public String getResult(String param) {
+            return param;
+        }
+    });
+```
+
+### Javascript 环境
+Javascript 的灵活性比较高，所以要简单一些：
+
+Javascript 注册处理函数：
+
+```javascript
+    window.JavaBridge.serverRegister('jsFn4', function (transactInfo, color) {
+        log("jsFn4:" + color);
+        title.style.background = color;
+        log("jsFn4:callback");
+        transactInfo.triggerCallback('success', 'background change to ' + color);
+    });
+```
+
+Javascript 执行 Java 方法：
+
+```javascript
+
+    var sdk = {
+        getUser: function (params) {
+            var _invokeName = 'getUser';
+            var _invokeParam = params;
+            var _clientCallback = params;
+            window.JavaBridge.invoke(_invokeName, _invokeParam, _clientCallback);
+        }
+    };
+
+    sdk.getUser({
+        "name_prefix": "standard_error",
+        "success": function (user) {
+            log('sdk.getUser,success:' + user.name);
+        },
+        "fail": function (error) {
+            log('sdk.getUser,fail:' + error.msg);
+        }
+    })
+```
+
+详细 Demo 请参见 [js-bridge-demo](https://github.com/xesam/JsBridge) 工程
+
+
 
