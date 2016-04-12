@@ -1,14 +1,46 @@
 # JsBridge
 
-## 原理
+## 简介
 
-要实现 Java 与 Js 的通信，有两条途径可以考虑：
+Android JsBridge 就是用来在 Android app的原生 java 代码与 javascript 代码中架设通信（调用）桥梁的辅助工具。 
 
-1. 集成一个定制化的 Js 与 Html 渲染引擎，这样可以获得完全的控制权。
+## 原理概述
+
+Js 运行在 WebView 中，而 WebView 只是 Js 执行引擎与页面渲染引擎的一个包装而已。
+
+由于这种天然的隔离效应，我们可以将这种情况与 IPC 进行类比，将 Java 与 Js 的每次互调都看做一次 IPC 调用。
+如此一来，我们可以模仿各种已有的 IPC 方式来进行设计，比如 RPC。本文模仿 Android 的 Binder 机制来实现一个 JsBridge。
+
+首先回顾一一下基于 Binder 的经典 RPC 调用：
+
+![js-bridge-rpc](./doc/js-bridge-rpc.png)
+
+当然，client 与 server 只是用来区分通信双方责任的叫法而已，并不是一成不变的。
+对于 java 与 javascript 互调的情况，当 java 主动调用 javascript 的时候，java 充当 client 角色，javascript 则扮演 server 的角色，
+javascript 中的函数执行完毕后回调 java 方法，这个时候，javascript 充当 client 角色，而 javascript 则承担 server 的责任。
+
+
+
+
+
+剩下的问题就是怎么来实现这个机制了，大致有这么几个需要解决的问题：
+
+1. java 如何调用 js
+2. js 如何调用 java
+3. 各自的回调如何处理
+4. 通信的数据格式是怎样的
+
+下面逐个讨论这些问题：
+
+##  1. java 如何调用 js
+
+要实现 Java 与 Js 的相互调用，有两条途径可以考虑：
+
+1. 集成一个定制化的 Js 与 Html 渲染引擎，java 通过引擎底层与 js 交互。这样可以获得完全的控制权。
 2. 使用 Android Sdk 提供的交互方法。
 
-对于第一种途径，代价比较大，而且技术方案比较复杂，一般只有基于 Js 的跨平台开发才会这么做。
-所以，现在说中考查第二种途径。
+对于第一种途径，代价比较大，而且技术方案比较复杂，一般只有基于 Js 的跨平台开发方案才会这么做。
+所以，现在着重考查第二种途径。
 
 Android 的默认 Sdk 中， Java 与 Js 的一切交互都是依托于 WebView 的，大致有以下几个可用方法：
 
@@ -28,15 +60,18 @@ Android 的默认 Sdk 中， Java 与 Js 的一切交互都是依托于 WebView 
     });//其中 scriptString 为 js 代码，ValueCallback 的用来获取 js 的执行结果。这是一个异步掉用。
 ```
 
-##### 第二， Js 调用 Java 方法
+这个调用看起比上面的正常，更像是一个方法调用。
 
-这个调用看起比上面的正常，更像是一个调用。
-现在 Js 环境中注入一个 Java 代理：
+需要注意的是，ValueCallback 并不是在 UI 线程里面执行的。
+
+##  2. js 如何调用 java
+
+要实现 js 调用 java 方法，需要先在 Js 环境中注入一个 Java 代理：
 
 ```java
 
     class JavaProxy{
-        @JavascriptInterface //注意这里的注解。处于安全的考虑，4.2 之后强制要求，不然无法从 js 中发起调用
+        @JavascriptInterface //注意这里的注解。出于安全的考虑，4.2 之后强制要求，不然无法从 js 中发起调用
         public void javaFn(){
             //xxxxxx
         };
@@ -45,31 +80,94 @@ Android 的默认 Sdk 中， Java 与 Js 的一切交互都是依托于 WebView 
     webView.addJavascriptInterface(new JavaProxy();, "java_proxy");
 ```
 
-然后在 Js 环境中直接在这个 obj_proxy 代理上调用方法即可。
+然后在 Js 环境中直接调用 obj_proxy 代理上的方法即可。
 
 ```javascript
 
     java_proxy.javaFn();
 ```
 
-## 机制设计
+这里有两个方面需要统一：
 
-基本的操作 Android 已经提供了，我们只需要在这几个方法上进行测试就行了。
-由于天然的隔离，我们可以经这种情况与 IPC 类比起来，看起来可行。所以，我们可以模仿 Android 的 Binder 机制，
-来设计一套 Java 与 Js 互相通信（调用）的机制。
+1. js 的执行方法比较怪异，所以，我们需要将概念统一化。
+2. 如果需要执行的方法比较多，那么，代理对象上也需要定义非常多的方法，我们需要将各种方法定义统一起来管理。
 
-当 Java 调用 Js 的时候，Java 扮演 Client 的角色，Js 扮演 Server 的角色。
-当 Js 调用 Java 的时候，Java 扮演 Js 的角色，Java 扮演 Server 的角色。
-
-对比一下：
+所以，我们先将 js 的执行包装成类似 java 一样的代理对象，然后通过在各自的 stub 上注册回调来增加功能支持。
 
 
-## 需要克服的问题
+## 3. 方法参数以及回调如何处理
 
-Java 调用 Js 没有返回值，只能使用回调的形式。
+很显然，任何 IPC 通信都涉及到参数序列化的问题， 同理 java 与 js 之间只能传递基础类型（注意，不单纯是基本类型），包括基本类型与字符串，不包括其他对象或者函数。
+由于只涉及到简单的相互调用，这里就可以考虑采用 JSON 格式来传递各种数据，轻量而简洁。
 
-1. 只能传递基础类型（注意，不是基本类型），包括基本类型与字符串，不包括其他对象，函数
+Java 调用 Js 没有返回值（这里指 loadUrl 形式的调用），因此如果 java 端想从 js 中获取返回值，只能使用回调的形式。
+但是在执行完毕之后如何找到正确的回调方法信息，这是一个重要的问题。比如有下面的例子：
 
+在 java 环境中，JavaProxy 对象有一个无参数的 getPackageName 方法用来获取当前应用的 PackageName。
+获取到 packageName 之后，传递给 js 调用者的对应回调中。
+
+在 js 环境中，获取当前应用的 PackageName 的大致调用如下：
+
+```javascript
+    bridge.invoke('getPackageName', null, function(packageName){
+        console.log(packageName);
+    });
+
+````
+
+显然
+
+```javascript
+    function(packageName){
+        console.log(packageName);
+    }
+       
+```
+
+这个 js 函数是无法传递到 java 环境中的，所以，可以采取的一个策略就是，
+在 js 环境中将所有回调统一管理起来，而只是将回调的 id 传递到 java 环境去，java 方法执行完毕之后，
+将回调参数以及对应的回调 id 返回给 js 环境，由 js 来负责执行正确的回调。
+
+这样，我们就可以实现一个简单的回调机制：
+
+在 java 环境中
+
+```java
+
+    class JavaProxy{
+        public void onTransact(String jsonInvoke, String jsonParam){
+            json = new Json(jsonInvoke);
+            invokeName = json.getInvokeName(); // getPackageName
+            callbackId = json.getCallbackId(); // 12345678xx
+            invokeParam = new Param(jsonParam);// null
+            
+            ...
+            ...
+            
+            JsProxy.invoke(callbackId, callbackParam); //发起 js 调用，让 js 去执行对应的回调
+        }
+    }
+
+```
+
+在 javascript 环境中
+
+```javascript
+    
+    bridge.invoke = function(name, param, callback){
+        var callbackId = new Date().getTime();
+        _callbacks[callbackId] = callback;
+        var invoke = {
+            "invokeName" : name,
+            "callbackId" : callbackId
+        };
+        JavaProxy.onTransact(JSON.stringify(invoke), JSON.stringify(param));
+    }
+    
+     bridge.invoke('getPackageName', null, function(packageName){
+         console.log(packageName);
+     });  
+```
 
 
 2. Js 调用通常会使用匿名回调，
