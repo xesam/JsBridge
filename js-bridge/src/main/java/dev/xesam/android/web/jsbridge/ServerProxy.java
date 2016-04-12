@@ -25,7 +25,9 @@ class ServerProxy {
      */
     @JavascriptInterface
     public void onTransact(String transactInfoMarshalling, String paramMarshalling) {
-        Log.e("ServerProxy#onTransact", transactInfoMarshalling + "/" + paramMarshalling);
+        if (JsBridge.DEBUG) {
+            Log.d("ServerProxy#onTransact", transactInfoMarshalling + "/" + paramMarshalling);
+        }
         TransactInfo transactInfo = TransactInfo.parse(transactInfoMarshalling);
         if (transactInfo.isCallback()) {
             dispatchCallbackInvoke(transactInfo, paramMarshalling);

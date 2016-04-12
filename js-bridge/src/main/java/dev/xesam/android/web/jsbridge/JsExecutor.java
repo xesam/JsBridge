@@ -32,7 +32,9 @@ final class JsExecutor {
     }
 
     public void transact(String script) {
-        Log.e(getClass().getSimpleName(), script);
+        if (JsBridge.DEBUG) {
+            Log.d(getClass().getSimpleName(), script);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mJsBridge.getWebView().evaluateJavascript(script, new ValueCallback<String>() {
                 @Override
