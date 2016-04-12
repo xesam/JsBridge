@@ -4,31 +4,32 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.Button;
 import android.widget.Toast;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import dev.xesam.android.web.jsbridge.ClientCallback;
 import dev.xesam.android.web.jsbridge.JsBridge;
 import dev.xesam.android.web.jsbridge.MarshallableString;
-import dev.xesam.android.web.jsbridge.SimpleServerHandler;
-import dev.xesam.android.web.jsbridge.ClientCallback;
 import dev.xesam.android.web.jsbridge.ServerCallback;
+import dev.xesam.android.web.jsbridge.SimpleServerHandler;
 
 public class MainActivity extends AppCompatActivity {
 
-    private WebView vWebView;
-    private Button vBtn1;
-    private Button vBtn2;
+    @Bind(R.id.webview)
+    public WebView vWebView;
+
+    JsBridge jsBridge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
         vWebView = (WebView) findViewById(R.id.webview);
-        vBtn1 = (Button) findViewById(R.id.invoke_js_without_callback);
-        vBtn2 = (Button) findViewById(R.id.invoke_js_with_callback);
-        final JsBridge jsBridge = new JsBridge(vWebView);
+        jsBridge = new JsBridge(vWebView);
         jsBridge.register(new SimpleServerHandler("showPackageName") {
             @Override
             public void handle(String param, ServerCallback serverCallback) {
@@ -43,30 +44,51 @@ public class MainActivity extends AppCompatActivity {
         });
         jsBridge.register(new UserHandler(this));
         vWebView.loadUrl("file:///android_asset/index.html");
+    }
 
-        vBtn1.setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.eval)
+    public void performEval() {
+        jsBridge.eval("window.jsFn1()");
+    }
+
+    @OnClick(R.id.invoke_1)
+    public void invoke1() {
+        jsBridge.invoke("jsFn1");
+    }
+
+    @OnClick(R.id.invoke_2)
+    public void invoke2() {
+        jsBridge.invoke("jsFn2", new MarshallableString("xesam"));
+    }
+
+    @OnClick(R.id.invoke_3)
+    public void invoke3() {
+        jsBridge.invoke("jsFn3", new ClientCallback<String>() {
             @Override
-            public void onClick(View v) {
-                jsBridge.invoke("jsFn1", new MarshallableString("yellow"), new ClientCallback<String>() {
-                    @Override
-                    public void onReceiveResult(String invokeName, String invokeParam) {
-                        if ("success".equals(invokeName)) {
-                            Toast.makeText(getApplicationContext(), invokeParam, Toast.LENGTH_SHORT).show();
-                        }
-                    }
+            public void onReceiveResult(String invokeName, String invokeParam) {
 
-                    @Override
-                    public String getResult(String param) {
-                        return param;
-                    }
-                });
+            }
+
+            @Override
+            public String getResult(String param) {
+                return null;
             }
         });
+    }
 
-        vBtn2.setOnClickListener(new View.OnClickListener() {
+    @OnClick(R.id.invoke_4)
+    public void invoke4() {
+        jsBridge.invoke("jsFn4", new MarshallableString("yellow"), new ClientCallback<String>() {
             @Override
-            public void onClick(View v) {
-                jsBridge.eval("window.jsFn1()");
+            public void onReceiveResult(String invokeName, String invokeParam) {
+                if ("success".equals(invokeName)) {
+                    Toast.makeText(getApplicationContext(), invokeParam, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public String getResult(String param) {
+                return param;
             }
         });
     }
