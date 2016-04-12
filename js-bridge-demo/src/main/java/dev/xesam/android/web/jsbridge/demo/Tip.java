@@ -17,7 +17,6 @@ public final class Tip {
 
     public static void init(Context context) {
         tip = Toast.makeText(context.getApplicationContext(), "-", Toast.LENGTH_SHORT);
-        tip.setGravity(Gravity.CENTER, 0, 0);
     }
 
     public static void showTip(Context context, String message) {
