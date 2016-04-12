@@ -82,9 +82,15 @@ public class MainActivity extends AppCompatActivity {
     public void invoke4() {
         jsBridge.invoke("jsFn4", new MarshallableString("yellow"), new ClientCallback<String>() {
             @Override
-            public void onReceiveResult(String invokeName, String invokeParam) {
+            public void onReceiveResult(String invokeName, final String invokeParam) {
                 if ("success".equals(invokeName)) {
-                    Tip.showTip(getApplicationContext(), invokeParam);
+
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Tip.showTip(getApplicationContext(), invokeParam);
+                        }
+                    });
                 }
             }
 
