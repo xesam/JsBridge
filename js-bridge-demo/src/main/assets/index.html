@@ -67,9 +67,12 @@
         dom.addEventListener('click', fn, false);
     }
 
+    var count = 0;
+
     function log(content) {
+        count++;
         var li = document.createElement('li');
-        li.appendChild(document.createTextNode(content));
+        li.appendChild(document.createTextNode("[" + count + "] " + content));
         document.getElementById('log').appendChild(li);
     }
 
