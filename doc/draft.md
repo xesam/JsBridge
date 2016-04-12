@@ -4,6 +4,9 @@
 
 Android JsBridge 就是用来在 Android app的原生 java 代码与 javascript 代码中架设通信（调用）桥梁的辅助工具。 
 
+
+[使用方式戳这里](#uasge)
+
 ## 原理概述
 
 Javascript 运行在 WebView 中，而 WebView 只是 Javascript 执行引擎与页面渲染引擎的一个包装而已。
@@ -235,4 +238,6 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
 
 1. 回调函数需要及时删除，不然会引起内存泄漏。
 
+## 使用
+<a name="usage"></a>
 
