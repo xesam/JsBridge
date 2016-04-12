@@ -7,9 +7,10 @@ import android.webkit.ValueCallback;
 import java.util.Locale;
 
 /**
+ * wrapper of android sdk js-interface
  * Created by xesamguo@gmail.com on 16-4-8.
  */
-class JsExecutor {
+final class JsExecutor {
 
     public static final String JS_EXECUTOR_ON_TRANSACT = "window.JavaBridge.serverOnTransact";
 

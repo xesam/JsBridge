@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * send transaction to server
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 class ClientProxy {
@@ -19,10 +20,16 @@ class ClientProxy {
         this.mJsExecutor = new JsExecutor(mJsBridge);
     }
 
+    /**
+     * [java -> js]
+     */
     public void transact(String script) {
         mJsExecutor.transact(script);
     }
 
+    /**
+     * [java -> js]
+     */
     public void transact(TransactInfo transactInfo, Marshallable invokeParam, ClientCallback<?> clientCallback) {
         if (clientCallback != null) {
             final long callbackId = SystemClock.elapsedRealtime();
@@ -33,7 +40,7 @@ class ClientProxy {
     }
 
     /**
-     * js -> java ： 回调 java 方法
+     * java -> [js -> java]
      */
     public void dispatchClientCallback(TransactInfo transactInfo, String paramMarshalling) {
         ClientCallback clientCallback = callbacks.get(transactInfo.getInvokeId());

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * handle [js -> java] transaction
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 class ServerProxy {
@@ -19,6 +20,9 @@ class ServerProxy {
         this.mJsBridge = mJsBridge;
     }
 
+    /**
+     * [js -> java]
+     */
     @JavascriptInterface
     public void onTransact(String transactInfoMarshalling, String paramMarshalling) {
         Log.e("ServerProxy#onTransact", transactInfoMarshalling + "/" + paramMarshalling);
@@ -35,7 +39,7 @@ class ServerProxy {
     }
 
     /**
-     * js -> java ： js 直接调用 java 方法
+     * [js -> java]
      */
     private void dispatchDirectInvoke(TransactInfo transactInfo, String paramMarshalling) {
         ServerHandler serverHandler = handlers.get(transactInfo.getInvokeName());
@@ -46,7 +50,7 @@ class ServerProxy {
     }
 
     /**
-     * js -> java ： js 回调 java 方法
+     * java -> [js -> java]
      */
     private void dispatchCallbackInvoke(TransactInfo transactInfo, String paramMarshalling) {
         mJsBridge.dispatchClientCallback(transactInfo, paramMarshalling);

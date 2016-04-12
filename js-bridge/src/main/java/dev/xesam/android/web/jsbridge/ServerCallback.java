@@ -15,7 +15,7 @@ public class ServerCallback {
     }
 
     /**
-     * java -> js ： 触发 js 回调
+     * js -> [java -> js]
      */
     public void invoke(String callbackName, Marshallable callbackParam) {
         TransactInfo transactInfo = TransactInfo.createCallbackInvoke(mCallbackId, callbackName);

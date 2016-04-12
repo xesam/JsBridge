@@ -4,9 +4,12 @@ import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
 /**
+ * JsBridge. invoke js function.and dispatch callback
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 public final class JsBridge {
+
+    public static boolean DEBUG = false;
 
     private WebView mWebView;
 

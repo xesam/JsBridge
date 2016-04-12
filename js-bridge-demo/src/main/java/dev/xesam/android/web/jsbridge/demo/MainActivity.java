@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        JsBridge.DEBUG = true;
+
         vWebView = (WebView) findViewById(R.id.webview);
         jsBridge = new JsBridge(vWebView);
         jsBridge.register(new SimpleServerHandler("showPackageName") {
