@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
-import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         String packageName = getPackageName();
-                        Toast.makeText(getApplicationContext(), "showPackageName:" + packageName, Toast.LENGTH_SHORT).show();
+                        Tip.showTip(getApplicationContext(), "showPackageName:" + packageName);
                     }
                 });
             }
@@ -82,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceiveResult(String invokeName, String invokeParam) {
                 if ("success".equals(invokeName)) {
-                    Toast.makeText(getApplicationContext(), invokeParam, Toast.LENGTH_SHORT).show();
+                    Tip.showTip(getApplicationContext(), invokeParam);
                 }
             }
 

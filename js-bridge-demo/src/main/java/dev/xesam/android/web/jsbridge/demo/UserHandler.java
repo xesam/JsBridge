@@ -38,7 +38,7 @@ public class UserHandler implements ServerHandler {
                 User user = getUser();
                 Map<String, String> map = new Gson().fromJson(param, Map.class);
                 String prefix = map.get("name_prefix");
-                Toast.makeText(mContext, "user.getName():" + prefix + "/" + user.getName(), Toast.LENGTH_SHORT).show();
+                Tip.showTip(mContext, "user.getName():" + prefix + "/" + user.getName());
                 if ("standard_error".equals(prefix)) {
                     Map<String, String> map1 = new HashMap<>();
                     map1.put("msg", "get user failed");
