@@ -4,6 +4,8 @@
 
 Android JsBridge 就是用来在 Android app的原生 java 代码与 javascript 代码中架设通信（调用）桥梁的辅助工具。 
 
+[原文地址点这里](http://xesam.github.io/android/2016/04/11/Android-%E5%A6%82%E4%BD%95%E5%86%99%E4%B8%80%E4%B8%AAJsBridge.html)
+
 [github点这里](https://github.com/xesam/JsBridge)
 
 [使用方式戳这里](#anchor_usage)
@@ -19,13 +21,13 @@ Javascript 运行在 WebView 中，而 WebView 只是 Javascript 执行引擎与
 
 首先回顾一一下基于 Binder 的经典 RPC 调用：
 
-![Javascript-bridge-rpc](./doc/js-bridge-rpc.png)
+![Javascript-bridge-rpc](https://github.com/xesam/JsBridge/blob/master/doc/js-bridge-rpc.png)
 
 当然，client 与 server 只是用来区分通信双方责任的叫法而已，并不是一成不变的。
 对于 java 与 javascript 互调的情况，当 java 主动调用 javascript 的时候，java 充当 client 角色，javascript 则扮演 server 的角色，
 javascript 中的函数执行完毕后回调 java 方法，这个时候，javascript 充当 client 角色，而 javascript 则承担 server 的责任。
 
-![Javascript-bridge-circle](./doc/js-bridge-circle.png)
+![Javascript-bridge-circle](https://github.com/xesam/JsBridge/blob/master/doc/js-bridge-circle.png)
 
 剩下的问题就是怎么来实现这个机制了，大致有这么几个需要解决的问题：
 
@@ -48,12 +50,12 @@ javascript 中的函数执行完毕后回调 java 方法，这个时候，javasc
 
 Android 的默认 Sdk 中， Java 与 Javascript 的一切交互都是依托于 WebView 的，大致有以下几个可用方法：
 
-##### 第一， Java 调用 Javascript 方法
+第一：
 
 ```java
     webView.loadUrl("javascript:scriptString"); //其中 scriptString 为 Javascript 代码
 ```
-在 KITKAT 之后，又新增了一个方法：
+第二，在 KITKAT 之后，又新增了一个方法：
 
 ```java
     webView.evaluateJavascript(scriptString, new ValueCallback<String>() {
@@ -111,7 +113,7 @@ Android 的默认 Sdk 中， Java 与 Javascript 的一切交互都是依托于 
 
 如图：
 
-![Javascript-bridge-register](./doc/js-bridge-register.png)
+![Javascript-bridge-register](https://github.com/xesam/JsBridge/blob/master/doc/js-bridge-register.png)
 
 ## 3. 方法参数以及回调如何处理
 
