@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -31,6 +32,12 @@ public class MainActivity extends AppCompatActivity {
         JsBridge.DEBUG = true;
 
         vWebView = (WebView) findViewById(R.id.webview);
+
+        vWebView.setWebViewClient(new WebViewClient() {
+
+        });
+
+
         jsBridge = new JsBridge(vWebView);
         jsBridge.register(new SimpleServerHandler("showPackageName") {
             @Override
@@ -46,6 +53,12 @@ public class MainActivity extends AppCompatActivity {
         });
         jsBridge.register(new UserHandler(this));
         vWebView.loadUrl("file:///android_asset/index.html");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        jsBridge.destroy();
     }
 
     @OnClick(R.id.eval)

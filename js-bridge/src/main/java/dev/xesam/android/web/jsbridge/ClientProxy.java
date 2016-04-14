@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * send transaction to server
+ * handle [java -> js] transaction
  * Created by xesamguo@gmail.com on 16-4-7.
  */
 class ClientProxy {
@@ -18,6 +18,10 @@ class ClientProxy {
     public ClientProxy(JsBridge mJsBridge) {
         this.mJsBridge = mJsBridge;
         this.mJsExecutor = new JsExecutor(mJsBridge);
+    }
+
+    public void destroy() {
+        callbacks.clear();
     }
 
     /**

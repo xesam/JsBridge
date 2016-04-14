@@ -20,6 +20,10 @@ class ServerProxy {
         this.mJsBridge = mJsBridge;
     }
 
+    public void destroy() {
+        handlers.clear();
+    }
+
     /**
      * [js -> java]
      */

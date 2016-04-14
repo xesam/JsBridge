@@ -24,12 +24,18 @@ public final class JsBridge {
         inject(mWebView);
     }
 
-    public WebView getWebView() {
+    WebView getWebView() {
         return mWebView;
     }
 
+    public void destroy() {
+        mServerProxy.destroy();
+        mClientProxy.destroy();
+        mWebView.getSettings().setJavaScriptEnabled(false);
+    }
+
     @SuppressLint({"SetJavaScriptEnabled", "AddJavascriptInterface", "JavascriptInterface"})
-    public void inject(WebView webView) {
+    private void inject(WebView webView) {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.addJavascriptInterface(mServerProxy, ServerProxy.JAVA_BRIDGE);
     }
