@@ -3,6 +3,9 @@ package dev.xesam.android.web.jsbridge;
 import android.annotation.SuppressLint;
 import android.webkit.WebView;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 /**
  * JsBridge. invoke js function.and dispatch callback
  * Created by xesamguo@gmail.com on 16-4-7.
@@ -12,6 +15,7 @@ public final class JsBridge {
     public static boolean DEBUG = false;
 
     private WebView mWebView;
+    private URL mCurrentUrl;
 
     private ServerProxy mServerProxy;
     private ClientProxy mClientProxy;
@@ -26,6 +30,47 @@ public final class JsBridge {
 
     WebView getWebView() {
         return mWebView;
+    }
+
+    public void monitor(String urlString) {
+        URL newUrl = null;
+        try {
+            newUrl = new URL(urlString);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        if (newUrl == null) {
+            mClientProxy.onNewPageLoaded();
+            return;
+        }
+
+        if (mCurrentUrl == null) {
+            mCurrentUrl = newUrl;
+            mClientProxy.onNewPageLoaded();
+            return;
+        }
+
+        if (!isSame(mCurrentUrl, newUrl)) {//different page
+            mCurrentUrl = newUrl;
+            mClientProxy.onNewPageLoaded();
+        }
+    }
+
+    private boolean isSame(URL urlA, URL urlB) {
+
+        if (!urlA.sameFile(urlB)) {
+            return false;
+        }
+
+        String queryA = urlA.getQuery();
+        String queryB = urlA.getQuery();
+
+        if (queryA == null) {
+            return queryB == null;
+        } else {
+            return queryA.equals(queryB);
+        }
     }
 
     public void destroy() {

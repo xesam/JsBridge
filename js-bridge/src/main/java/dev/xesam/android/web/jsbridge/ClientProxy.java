@@ -1,6 +1,7 @@
 package dev.xesam.android.web.jsbridge;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,13 @@ class ClientProxy {
     public ClientProxy(JsBridge mJsBridge) {
         this.mJsBridge = mJsBridge;
         this.mJsExecutor = new JsExecutor(mJsBridge);
+    }
+
+    public void onNewPageLoaded() {
+        if (JsBridge.DEBUG) {
+            Log.d("ClientProxy", "onNewPageLoaded");
+        }
+        callbacks.clear();
     }
 
     public void destroy() {

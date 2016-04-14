@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -32,13 +33,18 @@ public class MainActivity extends AppCompatActivity {
         JsBridge.DEBUG = true;
 
         vWebView = (WebView) findViewById(R.id.webview);
+        jsBridge = new JsBridge(vWebView);
 
         vWebView.setWebViewClient(new WebViewClient() {
 
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                Log.e("onPageFinished", url);
+                jsBridge.monitor(url);
+            }
         });
 
-
-        jsBridge = new JsBridge(vWebView);
         jsBridge.register(new SimpleServerHandler("showPackageName") {
             @Override
             public void handle(String param, ServerCallback serverCallback) {
@@ -59,6 +65,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         jsBridge.destroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (vWebView.canGoBack()) {
+            vWebView.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @OnClick(R.id.eval)
