@@ -271,6 +271,20 @@ javascript 端情况好很多，因为 WebView 会自己管理每个页面的资
     jsBridge = new JsBridge(vWebView);
 ```
 
+加入 url 监控：
+
+```java
+    vWebView.setWebViewClient(new WebViewClient() {
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            Log.e("onPageFinished", url);
+            jsBridge.monitor(url);
+        }
+    });
+```
+
 Java 注册处理方法：
 
 ```java
@@ -338,6 +352,16 @@ Java 执行 Js 函数：
             return param;
         }
     });
+```
+
+销毁 JsBridge
+
+```java
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        jsBridge.destroy();
+    }
 ```
 
 ### Javascript 环境
