@@ -196,9 +196,7 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
 问题都处理了，只需要设计对应的协议即可。
 按照上面的讨论,
 
-在 client 端：
-
-我们使用 
+在 client 端，我们使用：
 
 ```java
     Proxy.transact(invoke, callback);
@@ -206,10 +204,7 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
 
 来调用 server 端注册的方法。
 
-
-在 server 端
-
-我们使用 
+在 server 端，我们使用： 
 
 ```java
     Stub.register(name, handler);
@@ -241,7 +236,21 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
 
 ## 需要注意的问题
 
-1. 回调函数需要及时删除，不然会引起内存泄漏。
+#### 1. 回调函数需要及时删除，不然会引起内存泄漏。
+
+由于我们使用一 Hash 来保存各自环境中的回调函数。如果某个回调由于某种原因没有被触发，那么，这个引用的对象就永远不会被回收。
+针对这种问题，处理方案如下：
+
+在 Java 环境中：
+
+如果 WebView 被销毁了，应该手动移除所有的回调，然后禁用 javascript 。
+另外，一个 WebView 可能加载多个 Html 页面，如果页面的 URL 发生了改变，这个时候也应该清理所有的回调，因为 Html 页面是无状态的，也不会传递相互数据。
+这里有一点需要注意的是，如果 javascript 端是一个单页面应用，应该忽略 url 中 fragment （也就是 # 后面的部分） 的变化，因为并没有发生传统意义上的页面跳转，
+所有单应用的 Page 之间是可能有交互的。
+ 
+在 javascript 环境中：
+
+javascript 端情况好很多，因为 WebView 会自己管理每个页面的资源回收问题。
 
 ## 使用
 <a name="anchor_usage"></a>
