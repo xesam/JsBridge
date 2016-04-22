@@ -263,6 +263,8 @@ javascript 端情况好很多，因为 WebView 会自己管理每个页面的资
     <script src="js-bridge.js"></script>
 ```
 
+js-bridge.js 地址参见:[https://github.com/xesam/JsBridge/blob/master/js-bridge/src/main/assets/js-bridge.js](https://github.com/xesam/JsBridge/blob/master/js-bridge/src/main/assets/js-bridge.js)
+
 ### Java 环境
 
 初始化 JsBridge:
