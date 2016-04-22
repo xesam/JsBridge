@@ -18,7 +18,7 @@
         }
 
         TransactInfo.prototype = {
-            construnctor: TransactInfo,
+            constructor: TransactInfo,
 
             toJSON: function () {
                 var ret = {};
@@ -67,7 +67,7 @@
         };
 
         function javaOnTransact(transactInfo, invokeParam) {
-            console.log("javaOnTransact:" + JSON.stringify(transactInfo) + ":" + JSON.stringify(invokeParam));
+//            console.log("javaOnTransact:" + JSON.stringify(transactInfo) + ":" + JSON.stringify(invokeParam));
             JavaExecutor.onTransact(JSON.stringify(transactInfo), JSON.stringify(invokeParam));
         }
 
@@ -87,7 +87,7 @@
             },
 
             serverOnTransact: function (rawTransactInfo, invokeParam) {
-                console.log('serverOnTransact:' + JSON.stringify(rawTransactInfo) + "###" + JSON.stringify(invokeParam));
+//                console.log('serverOnTransact:' + JSON.stringify(rawTransactInfo) + "###" + JSON.stringify(invokeParam));
 
                 if (!rawTransactInfo) {
                     return;
