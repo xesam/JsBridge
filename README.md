@@ -1,5 +1,10 @@
 # JsBridge
 
+1. 原理概述
+2. 注意问题
+3. 使用方式
+4. 修改日志
+
 ## 简介
 
 Android JsBridge 就是用来在 Android app的原生 java 代码与 javascript 代码中架设通信（调用）桥梁的辅助工具。 
@@ -236,7 +241,7 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
     如果当前 invoke 是一个直接方法调用，那么 _invoke_id 应该是无效的。
     如果当前 invoke 是一个回调，那么 _invoke_id + _invoke_name 共同决定回调的具体对象
 
-## 需要注意的问题
+## 注意问题
 
 #### 1. 回调函数需要及时删除，不然会引起内存泄漏。
 
@@ -254,7 +259,7 @@ Java 调用 Javascript 没有返回值（这里指 loadUrl 形式的调用），
 
 javascript 端情况好很多，因为 WebView 会自己管理每个页面的资源回收问题。
 
-## 使用
+## 使用方式
 <a name="anchor_usage"></a>
 
 ### 必要配置
