@@ -2,6 +2,7 @@ package dev.xesam.android.web.jsbridge;
 
 /**
  * callback registered in js
+ * 用来执行 Js 环境的回调函数
  * <p/>
  * Created by xesamguo@gmail.com on 16-4-11.
  */
