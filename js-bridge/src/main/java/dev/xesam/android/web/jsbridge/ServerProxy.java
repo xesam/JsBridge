@@ -28,7 +28,7 @@ class ServerProxy {
      * [js -> java]
      */
     @JavascriptInterface
-    public void onTransact(String transactInfoMarshalling, String paramMarshalling) {
+    public final void onTransact(String transactInfoMarshalling, String paramMarshalling) {
         if (JsBridge.DEBUG) {
             Log.d("ServerProxy#onTransact", transactInfoMarshalling + "/" + paramMarshalling);
         }
@@ -46,17 +46,22 @@ class ServerProxy {
 
     /**
      * [js -> java]
+     * Js finish its invocation and delivery callback to Java
      */
     private void dispatchDirectInvoke(TransactInfo transactInfo, String paramMarshalling) {
         ServerHandler serverHandler = handlers.get(transactInfo.getInvokeName());
         if (serverHandler != null) {
             ServerCallback serverCallback = new ServerCallback(mJsBridge, transactInfo.getCallbackId());
             serverHandler.handle(paramMarshalling, serverCallback);
+        } else {
+            if (JsBridge.DEBUG) {
+                Log.w("dispatchDirectInvoke", "not ServerHandler:" + transactInfo.getInvokeName());
+            }
         }
     }
 
     /**
-     * java -> [js -> java]
+     * java -> [js -> java] Js call Java method directly
      */
     private void dispatchCallbackInvoke(TransactInfo transactInfo, String paramMarshalling) {
         mJsBridge.dispatchClientCallback(transactInfo, paramMarshalling);
