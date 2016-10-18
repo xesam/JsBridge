@@ -3,7 +3,6 @@ package dev.xesam.android.web.jsbridge.demo;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 
@@ -11,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import dev.xesam.android.web.jsbridge.MarshallableObject;
-import dev.xesam.android.web.jsbridge.ServerHandler;
 import dev.xesam.android.web.jsbridge.ServerCallback;
+import dev.xesam.android.web.jsbridge.ServerHandler;
 
 /**
  * Created by xesamguo@gmail.com on 16-4-8.
