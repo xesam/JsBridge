@@ -16,6 +16,7 @@ public final class JsBridge {
 
     private WebView mWebView;
     private URL mCurrentUrl;
+    private String mCurrentPage;
 
     private ServerProxy mServerProxy;
     private ClientProxy mClientProxy;
@@ -33,44 +34,24 @@ public final class JsBridge {
     }
 
     public void monitor(String urlString) {
-        URL newUrl = null;
-        try {
-            newUrl = new URL(urlString);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        if (newUrl == null) {
-            mClientProxy.onNewPageLoaded();
-            return;
-        }
-
-        if (mCurrentUrl == null) {
-            mCurrentUrl = newUrl;
-            mClientProxy.onNewPageLoaded();
-            return;
-        }
-
-        if (!isSame(mCurrentUrl, newUrl)) {//different page
-            mCurrentUrl = newUrl;
+        if (!isInnerPageJump(mCurrentPage, urlString)) {
+            mCurrentPage = urlString;
             mClientProxy.onNewPageLoaded();
         }
     }
 
-    private boolean isSame(URL urlA, URL urlB) {
-
-        if (!urlA.sameFile(urlB)) {
+    private boolean isInnerPageJump(String oldUrl, String newUrl) {
+        if (oldUrl == null || newUrl == null) {
             return false;
         }
-
-        String queryA = urlA.getQuery();
-        String queryB = urlA.getQuery();
-
-        if (queryA == null) {
-            return queryB == null;
-        } else {
-            return queryA.equals(queryB);
+        try {
+            URL urlA = new URL(oldUrl);
+            URL urlB = new URL(newUrl);
+            return urlA.sameFile(urlB);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
+        return false;
     }
 
     public void destroy() {
