@@ -59,6 +59,10 @@ class ClientProxy {
         if (clientCallback != null) {
             clientCallback.onReceiveResult(transactInfo.getInvokeName(), clientCallback.getResult(paramMarshalling));
             callbacks.remove(transactInfo.getInvokeId());
+        } else {
+            if (JsBridge.DEBUG) {
+                Log.w("dispatchClientCallback", "no ClientCallback:" + transactInfo.getInvokeName());
+            }
         }
     }
 }

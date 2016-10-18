@@ -55,7 +55,7 @@ class ServerProxy {
             serverHandler.handle(paramMarshalling, serverCallback);
         } else {
             if (JsBridge.DEBUG) {
-                Log.w("dispatchDirectInvoke", "not ServerHandler:" + transactInfo.getInvokeName());
+                Log.w("dispatchDirectInvoke", "no ServerHandler:" + transactInfo.getInvokeName());
             }
         }
     }

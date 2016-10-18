@@ -22,7 +22,7 @@ final class JsExecutor {
 
     public void transact(TransactInfo transactInfo, Marshallable param) {
         String script;
-        if (param == null) {
+        if (param == null) {// no js param
             script = String.format(Locale.getDefault(), "%s(%s)", JS_EXECUTOR_ON_TRANSACT, transactInfo.toMarshalling());
         } else {
             script = String.format(Locale.getDefault(), "%s(%s, %s)", JS_EXECUTOR_ON_TRANSACT, transactInfo.toMarshalling(), param.toMarshalling());
@@ -39,7 +39,9 @@ final class JsExecutor {
             mJsBridge.getWebView().evaluateJavascript(script, new ValueCallback<String>() {
                 @Override
                 public void onReceiveValue(String value) {
-                    Log.e("evaluateJavascript", "evaluateJavascript successful");
+                    if (JsBridge.DEBUG) {
+                        Log.d("transact", "evaluateJavascript successful");
+                    }
                 }
             });
         } else {
