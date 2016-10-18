@@ -20,5 +20,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile 'com.google.code.gson:gson:2.4'
     testCompile 'junit:junit:4.12'
 }
