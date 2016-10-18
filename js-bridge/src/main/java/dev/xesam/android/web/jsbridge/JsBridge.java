@@ -15,7 +15,6 @@ public final class JsBridge {
     public static boolean DEBUG = false;
 
     private WebView mWebView;
-    private URL mCurrentUrl;
     private String mCurrentPage;
 
     private ServerProxy mServerProxy;
