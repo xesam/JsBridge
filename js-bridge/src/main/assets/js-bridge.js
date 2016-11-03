@@ -95,7 +95,7 @@
                 var transactInfo = new TransactInfo();
                 transactInfo.parse(rawTransactInfo);
 
-                console.log(JSON.stringify(transactInfo));
+//                console.log(JSON.stringify(transactInfo));
 
                 transactInfo.invoke(invokeParam);
             }
