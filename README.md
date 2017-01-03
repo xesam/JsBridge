@@ -33,7 +33,7 @@ allprojects {
 ```gradle
 dependencies {
     ...
-    compile 'com.github.xesam:JsBridge:v0.1'
+    compile 'com.github.xesam:JsBridge:0.1'
 }
 ```
 
