@@ -93,7 +93,11 @@ Android 的默认 Sdk 中， Java 与 Javascript 的一切交互都是依托于 
 
 这个调用看起比上面的正常，而且更像是一个方法调用。
 
-需要注意的是，ValueCallback 并不是在 UI 线程里面执行的。
+<s>需要注意的是，ValueCallback 并不是在 UI 线程里面执行的。</s>
+修正：evaluateJavascript 和 ValueCallback 都是在 UI 线程调用和触发的，
+文档参见 [https://developer.android.google.cn/reference/android/webkit/WebView.html#evaluateJavascript](https://developer.android.google.cn/reference/android/webkit/WebView.html#evaluateJavascript(java.lang.String, android.webkit.ValueCallback<java.lang.String>))
+感谢 “jordan大师兄” 的指正。
+
 
 ##  2. Javascript 如何调用 java
 
