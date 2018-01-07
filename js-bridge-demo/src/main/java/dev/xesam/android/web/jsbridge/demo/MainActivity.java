@@ -8,7 +8,7 @@ import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dev.xesam.android.web.jsbridge.ClientCallback;
@@ -19,7 +19,7 @@ import dev.xesam.android.web.jsbridge.SimpleServerHandler;
 
 public class MainActivity extends AppCompatActivity {
 
-    @Bind(R.id.webview)
+    @BindView(R.id.webview)
     public WebView vWebView;
 
     JsBridge jsBridge;
