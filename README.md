@@ -1,3 +1,7 @@
+# 这个项目已经不维护了，新的实现参考 [JsBridge2](https://github.com/xesam/JsBridge2)，如果想要自己实现，可以参考 [从 0 到 1 写一个 JsBridge](https://github.com/xesam/JsBridge2/tree/master/build-jsbridge-from-0-to-1) 
+
+
+
 # JsBridge
 ## 简介
 
